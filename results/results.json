@@ -1,0 +1,252 @@
+{
+  "machine": {
+    "chip": "Apple M4 Pro",
+    "platform": "macOS-15.7.5-arm64-arm-64bit",
+    "torch": "2.13.0",
+    "python": "3.12.13"
+  },
+  "target": "Qwen/Qwen2.5-7B-Instruct",
+  "draft": "Qwen/Qwen2.5-0.5B-Instruct",
+  "device": "mps",
+  "dtype": "torch.float16",
+  "tokens": 64,
+  "repeats": 3,
+  "memory": {
+    "before_load": {
+      "rss_gb": 0.4066009521484375,
+      "sys_used_gb": 13.23046875,
+      "sys_avail_gb": 30.322357177734375,
+      "swap_used_gb": 2.21124267578125,
+      "mps_alloc_gb": 0.0,
+      "mps_driver_gb": 0.0004425048828125
+    },
+    "target_loaded": {
+      "rss_gb": 0.253997802734375,
+      "sys_used_gb": 18.934738159179688,
+      "sys_avail_gb": 9.28448486328125,
+      "swap_used_gb": 2.21124267578125,
+      "mps_alloc_gb": 14.185191631317139,
+      "mps_driver_gb": 15.039505004882812
+    },
+    "both_loaded": {
+      "rss_gb": 0.412078857421875,
+      "sys_used_gb": 26.380569458007812,
+      "sys_avail_gb": 15.766357421875,
+      "swap_used_gb": 2.21124267578125,
+      "mps_alloc_gb": 15.10539984703064,
+      "mps_driver_gb": 15.141067504882812
+    },
+    "after_run": {
+      "rss_gb": 0.8144683837890625,
+      "sys_used_gb": 29.037017822265625,
+      "sys_avail_gb": 14.388626098632812,
+      "swap_used_gb": 2.21124267578125,
+      "mps_alloc_gb": 15.10540223121643,
+      "mps_driver_gb": 15.333099365234375
+    }
+  },
+  "k_sweep": [
+    {
+      "k": 1,
+      "speedup": 1.1974023551027355,
+      "wall": 3.3943917078431696,
+      "tok_per_s": 18.8546300805885,
+      "acceptance": 0.9117647058823529,
+      "discarded": 3,
+      "proposed": 34,
+      "target_passes": 34,
+      "draft_passes": 68,
+      "rounds": 34,
+      "mean_accepted_run": 0.9117647058823529
+    },
+    {
+      "k": 2,
+      "speedup": 1.4393305113674686,
+      "wall": 2.8238494168035686,
+      "tok_per_s": 22.664098028443824,
+      "acceptance": 0.82,
+      "discarded": 9,
+      "proposed": 50,
+      "target_passes": 25,
+      "draft_passes": 75,
+      "rounds": 25,
+      "mean_accepted_run": 1.64
+    },
+    {
+      "k": 3,
+      "speedup": 1.6294664957850002,
+      "wall": 2.4943456251639873,
+      "tok_per_s": 25.658032052311277,
+      "acceptance": 0.7833333333333333,
+      "discarded": 13,
+      "proposed": 60,
+      "target_passes": 20,
+      "draft_passes": 80,
+      "rounds": 20,
+      "mean_accepted_run": 2.35
+    },
+    {
+      "k": 4,
+      "speedup": 1.644883326909027,
+      "wall": 2.4709671249147505,
+      "tok_per_s": 25.900789757455,
+      "acceptance": 0.6944444444444444,
+      "discarded": 22,
+      "proposed": 72,
+      "target_passes": 18,
+      "draft_passes": 90,
+      "rounds": 18,
+      "mean_accepted_run": 2.7777777777777777
+    },
+    {
+      "k": 5,
+      "speedup": 1.8285647342082498,
+      "wall": 2.222755666822195,
+      "tok_per_s": 28.793088217158306,
+      "acceptance": 0.72,
+      "discarded": 21,
+      "proposed": 75,
+      "target_passes": 15,
+      "draft_passes": 90,
+      "rounds": 15,
+      "mean_accepted_run": 3.6
+    },
+    {
+      "k": 6,
+      "speedup": 1.7856318227812609,
+      "wall": 2.276198583189398,
+      "tok_per_s": 28.11705466854457,
+      "acceptance": 0.6666666666666666,
+      "discarded": 28,
+      "proposed": 84,
+      "target_passes": 14,
+      "draft_passes": 98,
+      "rounds": 14,
+      "mean_accepted_run": 4
+    },
+    {
+      "k": 8,
+      "speedup": 1.7492806110007297,
+      "wall": 2.3234995000530034,
+      "tok_per_s": 27.544658390733478,
+      "acceptance": 0.5833333333333334,
+      "discarded": 40,
+      "proposed": 96,
+      "target_passes": 12,
+      "draft_passes": 108,
+      "rounds": 12,
+      "mean_accepted_run": 4.666666666666667
+    },
+    {
+      "k": 10,
+      "speedup": 1.4667854657657047,
+      "wall": 2.770993250189349,
+      "tok_per_s": 23.09641136643935,
+      "acceptance": 0.5727272727272728,
+      "discarded": 47,
+      "proposed": 110,
+      "target_passes": 11,
+      "draft_passes": 121,
+      "rounds": 11,
+      "mean_accepted_run": 5.7272727272727275
+    },
+    {
+      "k": 12,
+      "speedup": 1.362380760768177,
+      "wall": 2.9833455830812454,
+      "tok_per_s": 21.452425881516486,
+      "acceptance": 0.48484848484848486,
+      "discarded": 68,
+      "proposed": 132,
+      "target_passes": 11,
+      "draft_passes": 143,
+      "rounds": 11,
+      "mean_accepted_run": 5.818181818181818
+    },
+    {
+      "k": 16,
+      "speedup": 1.1330592066516745,
+      "wall": 3.587149375118315,
+      "tok_per_s": 17.841464992767158,
+      "acceptance": 0.32386363636363635,
+      "discarded": 119,
+      "proposed": 176,
+      "target_passes": 11,
+      "draft_passes": 187,
+      "rounds": 11,
+      "mean_accepted_run": 5.181818181818182
+    }
+  ],
+  "workloads": [
+    {
+      "workload": "structured",
+      "k": 5,
+      "speedup": 1.3629389333766688,
+      "base_wall": 4.147541749989614,
+      "spec_wall": 3.043087000027299,
+      "acceptance": 0.47,
+      "discarded": 53,
+      "proposed": 100,
+      "target_passes": 20,
+      "draft_passes": 120,
+      "mean_accepted_run": 2.35
+    },
+    {
+      "workload": "factual list",
+      "k": 5,
+      "speedup": 1.6009646064704524,
+      "base_wall": 4.166544541949406,
+      "spec_wall": 2.6025213331449777,
+      "acceptance": 0.6,
+      "discarded": 34,
+      "proposed": 85,
+      "target_passes": 17,
+      "draft_passes": 102,
+      "mean_accepted_run": 3
+    },
+    {
+      "workload": "open prose",
+      "k": 5,
+      "speedup": 1.817298386020774,
+      "base_wall": 4.086442874977365,
+      "spec_wall": 2.2486361658666283,
+      "acceptance": 0.72,
+      "discarded": 21,
+      "proposed": 75,
+      "target_passes": 15,
+      "draft_passes": 90,
+      "mean_accepted_run": 3.6
+    },
+    {
+      "workload": "code",
+      "k": 5,
+      "speedup": 2.3966661953837542,
+      "base_wall": 4.170197082916275,
+      "spec_wall": 1.739999125013128,
+      "acceptance": 0.9818181818181818,
+      "discarded": 1,
+      "proposed": 55,
+      "target_passes": 11,
+      "draft_passes": 66,
+      "mean_accepted_run": 4.909090909090909
+    },
+    {
+      "workload": "repetitive",
+      "k": 5,
+      "speedup": 2.3907364198413954,
+      "base_wall": 4.161957624834031,
+      "spec_wall": 1.740868458058685,
+      "acceptance": 1.0,
+      "discarded": 0,
+      "proposed": 55,
+      "target_passes": 11,
+      "draft_passes": 66,
+      "mean_accepted_run": 5
+    }
+  ],
+  "baseline": {
+    "wall": 4.064452625112608,
+    "tok_per_s": 15.746277765564272,
+    "target_passes": 64
+  }
+}
