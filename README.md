@@ -160,6 +160,23 @@ only pays if checking k tokens costs about what checking one costs.
 On MPS that holds: k=4 costs 1.04x of k=1. On CPU it does not, k=4 costs 3.63x,
 which is why this is a GPU technique.
 
+## Speculative speculative decoding
+
+*Experiments in progress.*
+
+Vanilla speculative decoding wastes time in both directions: the target sits idle while
+the draft is guessing, and the draft sits idle while the target is checking. Speculative
+speculative decoding attacks that second half. Rather than waiting, the draft predicts
+what the verification will conclude and starts producing the next block of guesses
+against that prediction, so the two models work at the same time instead of taking
+turns. PEARL ([arXiv 2408.11850](https://arxiv.org/abs/2408.11850)) calls this the
+mutual waiting problem and reports 1.50x over vanilla speculative decoding.
+
+Measuring it needs two models running genuinely at once. A single Apple GPU has one
+command queue and serialises them: two models in two threads measured 0.93x here,
+marginally slower than running them one after the other. Real numbers need either
+separate devices or a GPU with concurrent streams.
+
 ## On the choice of k
 
 Our measured optimum is **k=5** on prose. That is not an unusual number.
