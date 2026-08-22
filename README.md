@@ -160,6 +160,36 @@ only pays if checking k tokens costs about what checking one costs.
 On MPS that holds: k=4 costs 1.04x of k=1. On CPU it does not, k=4 costs 3.63x,
 which is why this is a GPU technique.
 
+## On the choice of k
+
+Our measured optimum is **k=5** on prose. That is not an unusual number.
+
+- **vLLM** uses `num_speculative_tokens: 5` throughout its
+  [speculative decoding docs](https://docs.vllm.ai/en/stable/features/spec_decode.html).
+- **HuggingFace** does not expose a fixed k at all. It ships an adaptive
+  `num_assistant_tokens_schedule="heuristic"` that raises the lookahead by 2 when a
+  whole block is accepted and backs off when it is not, which is the same behaviour
+  our workload sweep shows: the best k moves with the text.
+- **Leviathan et al.** ([arXiv 2211.17192](https://arxiv.org/abs/2211.17192)) give the
+  expected speedup in closed form and say the optimal lookahead "is the one maximizing
+  the walltime improvement equation", found numerically because it depends on both the
+  acceptance rate and the draft/target cost ratio. There is no universal constant.
+- **[Dynamic Speculation Lookahead](https://arxiv.org/abs/2405.04304)** argues the
+  optimum varies per input, which is why frameworks ship a schedule rather than a
+  number.
+- Practitioner write-ups put the useful band at **4 to 8** and drafts at
+  **1/10 to 1/50** of the target
+  ([Introl](https://introl.com/blog/speculative-decoding-llm-inference-speedup-guide-2025),
+  [Inference.net](https://inference.net/content/speculative-decoding/)).
+
+Why more lookahead stops helping, exactly: expected accepted tokens per round is
+`(1 - a^(k+1)) / (1 - a)`, which saturates at `1/(1-a)`, while draft cost grows
+linearly in k. Bounded benefit, unbounded cost. At a=0.8 the ceiling is 5 accepted
+tokens, so k=64 buys 0.67 more than k=8 for eight times the draft compute.
+
+Leviathan's gate: an improvement exists if and only if `a > c`, where c is the
+draft/target cost ratio. Ours is a=0.72, c=0.17.
+
 ## Method notes
 
 - Every timed region calls `torch.mps.synchronize()` before stopping the clock.
