@@ -23,7 +23,7 @@ from memstats import MemSnapshot
 from spec_decode import baseline, load, speculative, sync
 from workloads import DEFAULT, WORKLOADS
 
-OUT = Path("results")
+OUT = Path(__file__).parent / "results"
 
 
 def machine():

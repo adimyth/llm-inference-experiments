@@ -12,7 +12,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-OUT = Path("results")
+OUT = Path(__file__).parent / "results"
 
 THEMES = {
     "light": dict(surface="#fcfcfb", ink="#0b0b0b", muted="#52514e",
