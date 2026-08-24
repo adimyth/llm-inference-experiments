@@ -1,10 +1,12 @@
 """Charts for results/results.json: every quantized checkpoint against fp16.
 
-One multi-panel figure per the repo's convention (see speculative-decoding's
-spec_plot.py): light and dark rendered separately, not one image inverted.
+One chart per metric rather than one cramped grid - each gets its own
+figure, sized wide enough that six checkpoint labels sit flat without
+rotating or overlapping. Light and dark rendered separately, not one image
+inverted, per the repo's convention (see speculative-decoding's spec_plot.py).
 
 Reads results.json generically by checkpoint label, so this stays useful as
-more methods (HQQ, NF4, AWQ, GPTQ) get added later - a panel just silently
+more methods (HQQ, NF4, AWQ, GPTQ) get added later - a chart just silently
 skips any checkpoint missing that particular metric rather than erroring,
 since methods finish their benchmark passes at different times.
 """
@@ -31,11 +33,11 @@ THEMES = {
 LABEL_ORDER = ["fp16", "rtn-q4_0", "q4_k_m", "q5_k_m", "q8_0", "mlx-q4"]
 DISPLAY_NAME = {
     "fp16": "fp16",
-    "rtn-q4_0": "RTN\nQ4_0",
+    "rtn-q4_0": "RTN Q4_0",
     "q4_k_m": "Q4_K_M",
     "q5_k_m": "Q5_K_M",
     "q8_0": "Q8_0",
-    "mlx-q4": "MLX\n4-bit",
+    "mlx-q4": "MLX 4-bit",
 }
 
 
@@ -47,66 +49,69 @@ def ordered_labels(res):
 
 def style(ax, t):
     ax.set_facecolor(t["surface"])
-    ax.grid(True, axis="y", color=t["grid"], linewidth=0.8, alpha=0.9)
+    ax.grid(True, axis="y", color=t["grid"], linewidth=0.9, alpha=0.9)
     ax.set_axisbelow(True)
     for side in ("top", "right"):
         ax.spines[side].set_visible(False)
     for side in ("left", "bottom"):
         ax.spines[side].set_color(t["grid"])
-    ax.tick_params(colors=t["muted"], labelsize=9)
+    ax.tick_params(colors=t["muted"], labelsize=12)
 
 
-def bars(ax, t, labels, values, colour, fmt, ylabel):
+def bar_chart(res, theme, metric_key, extract, colour_key, fmt, title, subtitle, filename):
+    t = THEMES[theme]
+    labels = [l for l in ordered_labels(res) if metric_key in res[l]]
+    values = [extract(res[l]) for l in labels]
+
+    fig, ax = plt.subplots(figsize=(9.5, 5.6), facecolor=t["surface"])
+    style(ax, t)
     xs = range(len(labels))
-    ax.bar(list(xs), values, width=0.6, color=colour, edgecolor=t["surface"], linewidth=1.5)
+    ax.bar(list(xs), values, width=0.55, color=t[colour_key],
+           edgecolor=t["surface"], linewidth=2)
     ax.set_xticks(list(xs))
-    ax.set_xticklabels([DISPLAY_NAME.get(l, l) for l in labels], color=t["ink"], fontsize=8.5)
-    ax.set_ylabel(ylabel, color=t["muted"], fontsize=9)
+    ax.set_xticklabels([DISPLAY_NAME.get(l, l) for l in labels],
+                        color=t["ink"], fontsize=13)
+    ax.set_ylim(0, max(values) * 1.18)
     for x, y in zip(xs, values):
         ax.annotate(fmt.format(y), (x, y), textcoords="offset points",
-                    xytext=(0, 4), ha="center", color=t["ink"], fontsize=8.5)
+                    xytext=(0, 8), ha="center", color=t["ink"],
+                    fontsize=13, fontweight="bold")
 
-
-def headline(res, theme):
-    t = THEMES[theme]
-    labels = ordered_labels(res)
-
-    size_labels = [l for l in labels if "size_gb" in res[l]]
-    ppl_labels = [l for l in labels if "perplexity" in res[l]]
-    mmlu_labels = [l for l in labels if "mmlu" in res[l]]
-    tg_labels = [l for l in labels if "throughput" in res[l]]
-
-    fig, axes = plt.subplots(2, 2, figsize=(10, 7.5), facecolor=t["surface"])
-    (ax_size, ax_ppl), (ax_mmlu, ax_tg) = axes
-
-    if size_labels:
-        style(ax_size, t)
-        bars(ax_size, t, size_labels, [res[l]["size_gb"] for l in size_labels],
-             t["s1"], "{:.1f} GB", "Size on disk")
-
-    if ppl_labels:
-        style(ax_ppl, t)
-        bars(ax_ppl, t, ppl_labels, [res[l]["perplexity"]["ppl"] for l in ppl_labels],
-             t["s2"], "{:.2f}", "Perplexity, wikitext-2 (lower is better)")
-
-    if mmlu_labels:
-        style(ax_mmlu, t)
-        bars(ax_mmlu, t, mmlu_labels, [res[l]["mmlu"]["accuracy"] * 100 for l in mmlu_labels],
-             t["s3"], "{:.0f}%", "MMLU accuracy, 50q subset")
-
-    if tg_labels:
-        style(ax_tg, t)
-        bars(ax_tg, t, tg_labels, [res[l]["throughput"]["tg_tokens_per_sec"] for l in tg_labels],
-             t["s4"], "{:.1f}", "Generation speed (tokens/sec)")
-
-    fig.suptitle("Post-training quantization: Llama 3.1 8B Instruct\n"
-                 "size, quality, and speed against the fp16 baseline",
-                 color=t["ink"], fontsize=13, ha="left", x=0.06, y=0.99)
-    fig.tight_layout(rect=[0, 0, 1, 0.93])
-    p = OUT / f"headline_{theme}.png"
+    fig.suptitle(title, color=t["ink"], fontsize=16, ha="left", x=0.07, y=0.99)
+    ax.set_title(subtitle, color=t["muted"], fontsize=11, loc="left", pad=14)
+    fig.tight_layout(rect=[0, 0, 1, 0.90])
+    p = OUT / f"{filename}_{theme}.png"
     fig.savefig(p, dpi=160, facecolor=t["surface"])
     plt.close(fig)
     return p
+
+
+def size_chart(res, theme):
+    return bar_chart(res, theme, "size_gb", lambda r: r["size_gb"], "s1",
+                      "{:.1f} GB", "Size on disk",
+                      "Llama 3.1 8B Instruct, each checkpoint against the fp16 baseline",
+                      "size")
+
+
+def perplexity_chart(res, theme):
+    return bar_chart(res, theme, "perplexity", lambda r: r["perplexity"]["ppl"], "s2",
+                      "{:.2f}", "Perplexity, wikitext-2",
+                      "Lower is better. Full test split, same windowing across every checkpoint",
+                      "perplexity")
+
+
+def mmlu_chart(res, theme):
+    return bar_chart(res, theme, "mmlu", lambda r: r["mmlu"]["accuracy"] * 100, "s3",
+                      "{:.0f}%", "MMLU accuracy",
+                      "Fixed 50-question subset, identical questions for every checkpoint",
+                      "mmlu")
+
+
+def throughput_chart(res, theme):
+    return bar_chart(res, theme, "throughput", lambda r: r["throughput"]["tg_tokens_per_sec"], "s4",
+                      "{:.1f} t/s", "Generation speed",
+                      "Tokens/sec, decode only (tg128), median of repeated runs",
+                      "throughput")
 
 
 def tradeoff(res, theme):
@@ -114,25 +119,25 @@ def tradeoff(res, theme):
     t = THEMES[theme]
     labels = [l for l in ordered_labels(res) if "size_gb" in res[l] and "perplexity" in res[l]]
 
-    fig, ax = plt.subplots(figsize=(7.5, 6), facecolor=t["surface"])
+    fig, ax = plt.subplots(figsize=(8.5, 6.2), facecolor=t["surface"])
     style(ax, t)
-    ax.grid(True, axis="both", color=t["grid"], linewidth=0.8, alpha=0.9)
+    ax.grid(True, axis="both", color=t["grid"], linewidth=0.9, alpha=0.9)
 
     colours = [t["s1"], t["s2"], t["s3"], t["s4"], t["s2"], t["s1"]]
     for i, l in enumerate(labels):
         x = res[l]["size_gb"]
         y = res[l]["perplexity"]["ppl"]
-        ax.scatter(x, y, s=140, color=colours[i % len(colours)],
-                   edgecolor=t["surface"], linewidth=1.5, zorder=3)
-        ax.annotate(DISPLAY_NAME.get(l, l).replace("\n", " "), (x, y),
-                    textcoords="offset points", xytext=(10, 6),
-                    color=t["ink"], fontsize=9)
+        ax.scatter(x, y, s=180, color=colours[i % len(colours)],
+                   edgecolor=t["surface"], linewidth=2, zorder=3)
+        ax.annotate(DISPLAY_NAME.get(l, l), (x, y),
+                    textcoords="offset points", xytext=(12, 8),
+                    color=t["ink"], fontsize=12)
 
-    ax.set_xlabel("Size on disk (GB)", color=t["muted"], fontsize=9)
-    ax.set_ylabel("Perplexity, wikitext-2 (lower is better)", color=t["muted"], fontsize=9)
-    fig.suptitle("Smaller isn't always worse, but it isn't free either\n"
-                 "every checkpoint's size against its perplexity cost",
-                 color=t["ink"], fontsize=13, ha="left", x=0.08, y=0.99)
+    ax.set_xlabel("Size on disk (GB)", color=t["muted"], fontsize=12)
+    ax.set_ylabel("Perplexity, wikitext-2 (lower is better)", color=t["muted"], fontsize=12)
+    fig.suptitle("Size against quality", color=t["ink"], fontsize=16, ha="left", x=0.08, y=0.99)
+    ax.set_title("Every checkpoint's size on disk against its perplexity cost",
+                 color=t["muted"], fontsize=11, loc="left", pad=14)
     fig.tight_layout(rect=[0, 0, 1, 0.90])
     p = OUT / f"tradeoff_{theme}.png"
     fig.savefig(p, dpi=160, facecolor=t["surface"])
@@ -163,5 +168,5 @@ if __name__ == "__main__":
         results_raw[label]["size_gb"] = size_bytes / 1024**3
 
     for theme in THEMES:
-        print(headline(results_raw, theme))
-        print(tradeoff(results_raw, theme))
+        for fn in (size_chart, perplexity_chart, mmlu_chart, throughput_chart, tradeoff):
+            print(fn(results_raw, theme))
