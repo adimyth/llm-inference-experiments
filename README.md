@@ -8,6 +8,7 @@ One folder per topic. Each has its own README with the commands, the setup they 
 | --- | --- | --- |
 | [kv-caching](kv-caching/) | [KV Caching](https://adimyth.in/essays/llm-inference-kv-caching) | Cache size against the formula, and what caching is worth in wall time |
 | [speculative-decoding](speculative-decoding/) | [Speculative Decoding](https://adimyth.in/essays/llm-inference-speculative-decoding) | Speedup, acceptance, and discarded compute across lookahead and workload |
+| [quantization](quantization/) | [Post-Training Quantization](https://adimyth.in/essays/llm-inference-quantization) | Size, speed, perplexity, and MMLU accuracy across quantization methods, against the fp16 baseline |
 
 ## Setup
 
