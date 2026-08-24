@@ -109,6 +109,37 @@ def headline(res, theme):
     return p
 
 
+def tradeoff(res, theme):
+    """Size against perplexity: is a smaller checkpoint always a worse one?"""
+    t = THEMES[theme]
+    labels = [l for l in ordered_labels(res) if "size_gb" in res[l] and "perplexity" in res[l]]
+
+    fig, ax = plt.subplots(figsize=(7.5, 6), facecolor=t["surface"])
+    style(ax, t)
+    ax.grid(True, axis="both", color=t["grid"], linewidth=0.8, alpha=0.9)
+
+    colours = [t["s1"], t["s2"], t["s3"], t["s4"], t["s2"], t["s1"]]
+    for i, l in enumerate(labels):
+        x = res[l]["size_gb"]
+        y = res[l]["perplexity"]["ppl"]
+        ax.scatter(x, y, s=140, color=colours[i % len(colours)],
+                   edgecolor=t["surface"], linewidth=1.5, zorder=3)
+        ax.annotate(DISPLAY_NAME.get(l, l).replace("\n", " "), (x, y),
+                    textcoords="offset points", xytext=(10, 6),
+                    color=t["ink"], fontsize=9)
+
+    ax.set_xlabel("Size on disk (GB)", color=t["muted"], fontsize=9)
+    ax.set_ylabel("Perplexity, wikitext-2 (lower is better)", color=t["muted"], fontsize=9)
+    fig.suptitle("Smaller isn't always worse, but it isn't free either\n"
+                 "every checkpoint's size against its perplexity cost",
+                 color=t["ink"], fontsize=13, ha="left", x=0.08, y=0.99)
+    fig.tight_layout(rect=[0, 0, 1, 0.90])
+    p = OUT / f"tradeoff_{theme}.png"
+    fig.savefig(p, dpi=160, facecolor=t["surface"])
+    plt.close(fig)
+    return p
+
+
 if __name__ == "__main__":
     results_raw = json.loads((OUT / "results.json").read_text())
     # size isn't in results.json (it's derived from the file itself, not a
@@ -133,3 +164,4 @@ if __name__ == "__main__":
 
     for theme in THEMES:
         print(headline(results_raw, theme))
+        print(tradeoff(results_raw, theme))
