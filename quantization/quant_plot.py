@@ -30,7 +30,7 @@ THEMES = {
 
 # Preferred display order; anything in results.json but not listed here is
 # appended at the end so a new method never gets silently dropped.
-LABEL_ORDER = ["fp16", "rtn-q4_0", "q4_k_m", "q5_k_m", "q8_0", "mlx-q4"]
+LABEL_ORDER = ["fp16", "rtn-q4_0", "q4_k_m", "q5_k_m", "q8_0", "mlx-q4", "hqq-q4"]
 DISPLAY_NAME = {
     "fp16": "fp16",
     "rtn-q4_0": "RTN Q4_0",
@@ -38,6 +38,7 @@ DISPLAY_NAME = {
     "q5_k_m": "Q5_K_M",
     "q8_0": "Q8_0",
     "mlx-q4": "MLX 4-bit",
+    "hqq-q4": "HQQ 4-bit",
 }
 
 
@@ -58,9 +59,9 @@ def style(ax, t):
     ax.tick_params(colors=t["muted"], labelsize=12)
 
 
-def bar_chart(res, theme, metric_key, extract, colour_key, fmt, title, subtitle, filename):
+def bar_chart(res, theme, metric_key, extract, colour_key, fmt, title, subtitle, filename, exclude=()):
     t = THEMES[theme]
-    labels = [l for l in ordered_labels(res) if metric_key in res[l]]
+    labels = [l for l in ordered_labels(res) if metric_key in res[l] and l not in exclude]
     values = [extract(res[l]) for l in labels]
 
     fig, ax = plt.subplots(figsize=(9.5, 5.6), facecolor=t["surface"])
@@ -108,10 +109,15 @@ def mmlu_chart(res, theme):
 
 
 def throughput_chart(res, theme):
+    # hqq-q4 excluded: HQQ has no fused/MPS-native decode backend, so its
+    # generation speed reflects backend maturity, not the quantization
+    # itself - about 200x off every other checkpoint, which would flatten
+    # this chart. Its number still lives in results.json and the README/
+    # essay tables, just not plotted here.
     return bar_chart(res, theme, "throughput", lambda r: r["throughput"]["tg_tokens_per_sec"], "s4",
                       "{:.1f} t/s", "Generation speed",
                       "Tokens/sec, decode only (tg128), median of repeated runs",
-                      "throughput")
+                      "throughput", exclude={"hqq-q4"})
 
 
 def tradeoff(res, theme):
@@ -123,7 +129,7 @@ def tradeoff(res, theme):
     style(ax, t)
     ax.grid(True, axis="both", color=t["grid"], linewidth=0.9, alpha=0.9)
 
-    colours = [t["s1"], t["s2"], t["s3"], t["s4"], t["s2"], t["s1"]]
+    colours = [t["s1"], t["s2"], t["s3"], t["s4"], t["s2"], t["s1"], t["s4"]]
     for i, l in enumerate(labels):
         x = res[l]["size_gb"]
         y = res[l]["perplexity"]["ppl"]
@@ -157,6 +163,7 @@ if __name__ == "__main__":
         "q5_k_m": "llama-3.1-8b-instruct-q5_k_m.gguf",
         "q8_0": "llama-3.1-8b-instruct-q8_0.gguf",
         "mlx-q4": "llama-3.1-8b-instruct-mlx-q4",
+        "hqq-q4": "llama-3.1-8b-instruct-hqq-q4",
     }
     for label, filename in size_map.items():
         if label not in results_raw:

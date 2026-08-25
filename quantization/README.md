@@ -31,6 +31,7 @@ rather than a number typed in by hand.
 | `llama-3.1-8b-instruct-q5_k_m.gguf` | `quant_kquants.py` | 5.34 GB |
 | `llama-3.1-8b-instruct-q8_0.gguf` | `quant_kquants.py` | 7.95 GB |
 | `llama-3.1-8b-instruct-mlx-q4/` (directory: `model.safetensors` + config/tokenizer) | `quant_mlx.py` | 4.22 GB |
+| `llama-3.1-8b-instruct-hqq-q4/` (directory: `qmodel.pt` + `config.json`) | `quant_hqq.py` | 5.61 GB |
 
 `data/wikitext-2-raw-test.txt` (the wikitext-2 test split, plain text) is produced by `fetch_wikitext.py` and shared by every perplexity script regardless of format.
 
@@ -50,7 +51,11 @@ rather than a number typed in by hand.
 | `quant_mlx_throughput.py` | Tokens/sec for an MLX checkpoint via `mlx_lm.stream_generate`. |
 | `quant_mlx_perplexity.py` | Perplexity on the same wikitext-2 file/windowing as `quant_perplexity.py`, reimplemented against `mlx_lm` directly rather than using `mlx_lm`'s own `perplexity` subcommand (which samples a different dataset split and isn't comparable - see below). |
 | `quant_mlx_mmlu.py` | Same fixed 50-question subset as `quant_mmlu.py` (imports its `TASKS`/`LIMIT_PER_TASK` directly), scored via `lm_eval.simple_evaluate` called in-process against `mlx_lm`'s `MLXLM` class - no HTTP server needed for this format. |
-| `quant_plot.py` | Charts from `results.json`: size, perplexity, MMLU accuracy, and generation speed, every checkpoint against fp16. Light/dark PNG pairs in `results/`. Reads checkpoints generically by label, so a panel just skips any checkpoint that doesn't have that metric yet rather than erroring - safe to rerun as each method's benchmarks land. |
+| `quant_hqq.py` | HF checkpoint -> HQQ, quantized (calibration-free, closed-form scale/zero-point per group). Uses `hqq`'s own `AutoHQQHFModel.quantize_model`/`save_quantized`, not transformers' generic `HqqConfig` path - see note below on why. |
+| `quant_hqq_perplexity.py` | Perplexity on the same wikitext-2 file/windowing as the other perplexity scripts, run directly against the HQQ model on MPS via `transformers`. |
+| `quant_hqq_mmlu.py` | Same fixed 50-question subset, scored via `lm_eval`'s `HFLM` wrapper called in-process against the already-loaded HQQ model - no HTTP server, same shape as the MLX path. |
+| `quant_hqq_throughput.py` | Tokens/sec (prompt processing and generation) for the HQQ checkpoint, same pp/tg split and `torch.mps.synchronize()` discipline as the rest of the repo. |
+| `quant_plot.py` | Charts from `results.json`: size, perplexity, MMLU accuracy, and generation speed, every checkpoint against fp16. Light/dark PNG pairs in `results/`. Reads checkpoints generically by label, so a panel just skips any checkpoint that doesn't have that metric yet rather than erroring - safe to rerun as each method's benchmarks land. HQQ's generation speed is excluded from the speed chart specifically (see note below) though it's still in `results.json` and the table here. |
 | `results_io.py` | Shared results/results.json merge, keyed by checkpoint label. |
 
 **Why `llama_cpp.server` and not llama.cpp's own `llama-server`** for the MMLU eval: `lm_eval`'s `gguf` model type needs per-token logprobs across the full echoed prompt+continuation to score multiple-choice answers. `llama-server` (the C++ binary) only ever returns logprobs for newly *generated* tokens, never echoed text - confirmed against its own README and a live request, not a version mismatch, a structurally different capability. `llama_cpp.server` (from `llama-cpp-python[server]`, same Metal backend underneath) computes logprobs itself over the full sequence and matches the shape `lm_eval` expects, unmodified.
@@ -77,15 +82,17 @@ different sampling - the two numbers wouldn't mean the same thing, so
 teacher-forced next-token accounting, so perplexity is comparable across
 every checkpoint in this project, not just within one format.
 
-## Results: fp16 baseline vs RTN, k-quants, and MLX
+## Results: fp16 baseline vs RTN, k-quants, MLX, and HQQ
 
-| Metric | fp16 | RTN `Q4_0` | `Q4_K_M` | `Q5_K_M` | `Q8_0` | MLX 4-bit |
-| --- | --- | --- | --- | --- | --- | --- |
-| Size on disk | 14.97 GB | 4.34 GB | 4.58 GB | 5.34 GB | 7.95 GB | 4.22 GB |
-| Generation speed (tg128) | 15.5 t/s | 48.5 t/s | 44.9 t/s | 31.2 t/s | 28.1 t/s | 52.8 t/s |
-| Prompt processing (pp512) | 315.5 t/s | 377.8 t/s | 359.9 t/s | 329.4 t/s | 362.6 t/s | 359.7 t/s |
-| Perplexity (wikitext-2) | 7.395 | 7.804 (+5.5%) | 7.622 (+3.1%) | 7.467 (+1.0%) | 7.399 (+0.05%) | 10.123 (+36.9%) |
-| MMLU (50 q, stratified) | 82.0% (41/50) | 76.0% (38/50) | 78.0% (39/50) | 80.0% (40/50) | 80.0% (40/50) | 76.0% (38/50) |
+| Metric | fp16 | RTN `Q4_0` | `Q4_K_M` | `Q5_K_M` | `Q8_0` | MLX 4-bit | HQQ 4-bit |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Size on disk | 14.97 GB | 4.34 GB | 4.58 GB | 5.34 GB | 7.95 GB | 4.22 GB | 5.61 GB |
+| Generation speed (tg128) | 15.5 t/s | 48.5 t/s | 44.9 t/s | 31.2 t/s | 28.1 t/s | 52.8 t/s | 0.6 t/s* |
+| Prompt processing (pp512) | 315.5 t/s | 377.8 t/s | 359.9 t/s | 329.4 t/s | 362.6 t/s | 359.7 t/s | 141.0 t/s |
+| Perplexity (wikitext-2) | 7.395 | 7.804 (+5.5%) | 7.622 (+3.1%) | 7.467 (+1.0%) | 7.399 (+0.05%) | 10.123 (+36.9%) | 9.957 (+34.6%) |
+| MMLU (50 q, stratified) | 82.0% (41/50) | 76.0% (38/50) | 78.0% (39/50) | 80.0% (40/50) | 80.0% (40/50) | 76.0% (38/50) | 76.0% (38/50) |
+
+\* Not comparable to the other generation-speed numbers - see the HQQ section below. Excluded from `throughput_*.png` for the same reason.
 
 RTN shrinks the checkpoint by 71% and roughly triples decode throughput, for
 a modest perplexity cost but a more visible drop in actual multiple-choice
@@ -129,3 +136,48 @@ quantized checkpoints to evaluate dramatically faster than fp16 despite the
 large decode speedup - MLX's in-process MMLU (40s) is the exception, and
 that gap is about eval architecture (no HTTP server round-trip) rather than
 about the checkpoint itself.
+
+## HQQ
+
+Half-Quadratic Quantization is calibration-free like RTN, but instead of a
+single min/max-derived scale per block it solves a small closed-form
+optimization per group to pick the scale and zero-point that minimize
+reconstruction error - a better fit than round-to-nearest at the same group
+size and bit width. Verified directly: quantizing a real weight matrix
+(`layers[10].mlp.down_proj`) at `nbits=4, group_size=64` gives HQQ 35-40%
+lower MSE than naive RTN at matching settings.
+
+Despite that, its end-to-end numbers land close to MLX's, not RTN's:
+perplexity +34.6% against RTN's +5.5%, MMLU tied with RTN and MLX at 76.0%.
+Per-layer weight reconstruction error doesn't predict downstream perplexity
+here - confirmed by re-running perplexity on the freshly-quantized
+in-memory model (no save/reload) and getting an identical number to the
+model reloaded from disk, so this isn't a save/load bug either. Worth
+treating as a real, verified finding, not a broken script: better per-group
+fit and better end-to-end quality are not the same claim.
+
+**HQQ's default API is CUDA-first.** `AutoHQQHFModel.from_quantized` and
+the low-level `Quantizer.quantize`/`optimize_weights` both default to
+`device='cuda'` and will silently try to restore CUDA-mapped tensors (or
+run the optimization step) on the wrong device if you don't override it.
+Every call in this repo's HQQ scripts passes `device='mps'` explicitly.
+
+**HQQ's generation speed (0.6 t/s) is not comparable to the other
+methods'.** Its default backend dequantizes the packed 4-bit weights on
+every forward call rather than caching the dequantized tensor; for a
+single-token decode step the matmul itself is tiny, so that dequant
+overhead dominates and decode ends up close to 200x slower than fp16.
+HQQ ships fused backends (`torchao_int4`, `marlin`, `bitblas`) that avoid
+this, but all of them are CUDA-only - there's no MPS-native fast path, so
+this is a genuine property of running HQQ on Apple Silicon today, not a
+bug in `quant_hqq_throughput.py`. `use_cache=True` was confirmed on the
+model config before concluding this - it isn't a disabled-KV-cache bug
+either.
+
+**`AutoHQQHFModel.save_quantized`/`from_quantized`, not transformers'
+generic `HqqConfig` path.** Loading a HQQ-quantized model saved via
+transformers' generic `save_pretrained`/`from_pretrained` raises
+`NotImplementedError: QuantizationMethod.HQQ is not available yet` on this
+transformers version (5.15.1) - a real gap in that reload path, not a
+version mismatch. HQQ's own save/load API works fine and is what
+`quant_hqq.py` and every `quant_hqq_*.py` script use instead.
