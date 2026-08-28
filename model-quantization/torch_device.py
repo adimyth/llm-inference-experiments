@@ -6,6 +6,7 @@ The HQQ scripts hardcode `mps` because they only ever ran on the Mac. The AWQ/GP
 """
 
 import torch
+from transformers import AutoModelForCausalLM
 
 
 def resolve(name: str) -> str:
@@ -30,3 +31,18 @@ def describe(device: str) -> str:
     if device.startswith("cuda"):
         return f"{device} ({torch.cuda.get_device_name(0)})"
     return device
+
+
+def load_causal_lm(model_id: str, device: str, dtype: str = "float16"):
+    """Load a transformers checkpoint onto `device`, the right way per backend.
+
+    Two things differ by backend and both matter.
+
+    Placement: on CUDA, `device_map` is the normal path and handles a quantized checkpoint's own placement rules. On MPS it is pathologically slow, ten minutes and still loading an 8B model, so there the model loads on CPU and moves afterwards.
+
+    Dtype: `float16` is right for the unquantized fp16 baseline and is what produced its 7.365 perplexity, so it stays the default and that number stays reproducible. Pass `auto` for a quantized checkpoint (AWQ, GPTQ) and let its own config decide, rather than forcing a dtype that fights the quantization it was saved with.
+    """
+    kwargs = {"dtype": dtype if dtype == "auto" else getattr(torch, dtype)}
+    if device.startswith("cuda"):
+        return AutoModelForCausalLM.from_pretrained(model_id, device_map=device, **kwargs)
+    return AutoModelForCausalLM.from_pretrained(model_id, **kwargs).to(device)

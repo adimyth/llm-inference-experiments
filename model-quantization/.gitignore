@@ -2,3 +2,4 @@ models/
 data/
 results/mmlu_raw/*/server.log
 results/hqq_run.log
+.venv-cuda/

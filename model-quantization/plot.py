@@ -120,11 +120,15 @@ def mmlu_chart(res, theme):
 
 
 def throughput_chart(res, theme):
-    # hqq-q4 excluded: HQQ has no fused/MPS-native decode backend, so its generation speed reflects backend maturity, not the quantization itself - about 200x off every other checkpoint, which would flatten this chart. Its number still lives in results.json and the README/ essay tables, just not plotted here.
+    # Two kinds of exclusion here, for two different reasons.
+    #
+    # hqq-q4: HQQ has no fused MPS decode backend, so its generation speed reflects backend maturity rather than the quantization, about 200x off every other checkpoint, which would flatten this chart. Its number still lives in results.json and the tables.
+    #
+    # awq-q4 and gptq-q4: these ran on a rented NVIDIA GPU, every other checkpoint here ran on an M4 Pro. Plotting them as bars in the same axis would invite exactly the comparison that isn't valid. Their speed belongs in a table against the fp16-cuda control measured on that same GPU. Perplexity, MMLU and size are hardware-independent and do appear in the other charts.
     return bar_chart(res, theme, "throughput", lambda r: r["throughput"]["tg_tokens_per_sec"], "s4",
                       "{:.1f} t/s", "Generation speed",
-                      "Tokens/sec, decode only (tg128), median of repeated runs",
-                      "throughput", exclude={"hqq-q4"})
+                      "Tokens/sec, decode only (tg128), median of runs. Apple M4 Pro only",
+                      "throughput", exclude={"hqq-q4", "awq-q4", "gptq-q4"})
 
 
 def tradeoff(res, theme):

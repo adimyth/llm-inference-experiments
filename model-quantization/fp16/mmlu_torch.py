@@ -1,4 +1,9 @@
-"""MMLU accuracy for any transformers-loadable checkpoint.
+"""MMLU accuracy for any transformers-loadable checkpoint, on any device.
+
+The fp16 control run. fp16/mmlu.py and fp16/throughput.py go through llama.cpp and only read GGUF, which is fine on the Mac and useless on a rented NVIDIA box. This is the transformers path, so the unquantized model can be measured on the same GPU as AWQ and GPTQ, with the same code that measures them.
+
+That control is what makes the CUDA speed numbers mean anything: tokens/sec on an L40S cannot be read against an M4 Pro, only against fp16 on the same L40S.
+
 
 The generic counterpart to quant_hqq_mmlu.py. Same fixed 50-question subset, imported from quant_gguf_mmlu.py directly rather than restated here, so there is no way for the two to drift apart. lm_eval's HFLM accepts an already-loaded transformers model, so this scores in-process with no HTTP server, the same shape as the MLX and HQQ paths.
 
@@ -70,8 +75,8 @@ if __name__ == "__main__":
     parser.add_argument("--tokenizer", help="local HF snapshot dir or hub repo id; defaults to --model")
     parser.add_argument("--label", required=True, help="checkpoint label, e.g. awq-q4")
     parser.add_argument("--device", default="auto", choices=["auto", "cuda", "mps", "cpu"])
-    parser.add_argument("--dtype", default="auto", choices=["auto", "float16", "bfloat16"],
-                        help="quantized checkpoints keep their own dtype")
+    parser.add_argument("--dtype", default="float16", choices=["auto", "float16", "bfloat16"],
+                        help="float16 is what the published fp16 baseline used")
     parser.add_argument("--out-dir", default="../results/mmlu_raw")
     args = parser.parse_args()
 

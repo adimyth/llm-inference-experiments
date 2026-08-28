@@ -22,18 +22,17 @@ import argparse
 import torch
 import torch.nn.functional as F
 from loguru import logger
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoTokenizer
 
 import perplexity_core
 import torch_device
 from results_io import update
 
 
-def run(model_id: str, tokenizer_id: str, device: str, ctx_size: int) -> dict:
+def run(model_id: str, tokenizer_id: str, device: str, ctx_size: int, dtype: str) -> dict:
     logger.info(f"loading {model_id} on {torch_device.describe(device)}")
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_id)
-    # Loaded onto CPU and then moved, rather than device_map=device: accelerate's dispatch path is pathologically slow for an 8B model on MPS (ten minutes and still loading), and a single-GPU 8B model needs no sharding anyway.
-    model = AutoModelForCausalLM.from_pretrained(model_id, dtype=torch.float16).to(device)
+    model = torch_device.load_causal_lm(model_id, device, dtype)
     model.eval()
 
     def nll_fn(window, start):
@@ -51,6 +50,7 @@ def run(model_id: str, tokenizer_id: str, device: str, ctx_size: int) -> dict:
     tokens = tokenizer.encode(perplexity_core.load_text())
     stats = perplexity_core.run(tokens, nll_fn, ctx_size)
     stats["device"] = device
+    stats["dtype"] = dtype
     stats["engine"] = "transformers"
     return stats
 
@@ -61,8 +61,10 @@ if __name__ == "__main__":
     parser.add_argument("--tokenizer", help="local HF snapshot dir or hub repo id; defaults to --model")
     parser.add_argument("--label", required=True, help="checkpoint label, e.g. fp16-torch, awq-q4")
     parser.add_argument("--device", default="auto", choices=["auto", "cuda", "mps", "cpu"])
+    parser.add_argument("--dtype", default="auto", choices=["auto", "float16", "bfloat16"],
+                        help="quantized checkpoints keep their own dtype")
     parser.add_argument("--ctx-size", type=int, default=perplexity_core.CTX_SIZE)
     args = parser.parse_args()
 
-    stats = run(args.model, args.tokenizer or args.model, torch_device.resolve(args.device), args.ctx_size)
+    stats = run(args.model, args.tokenizer or args.model, torch_device.resolve(args.device), args.ctx_size, args.dtype)
     update(args.label, "perplexity", stats)

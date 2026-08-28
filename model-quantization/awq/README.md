@@ -50,9 +50,21 @@ python mmlu.py       --model ../models/llama-3.1-8b-instruct-awq-q4 --label awq-
 python throughput.py --model ../models/llama-3.1-8b-instruct-awq-q4 --label awq-q4 --device cuda
 ```
 
+The benchmark scripts default to `--dtype auto`, so the checkpoint's own quantization config decides its dtype. Do not force `float16` on them.
+
 Run the fp16 control on the same GPU first, so the speed numbers have a baseline:
 
 ```bash
 cd ../fp16
 python perplexity_torch.py --model meta-llama/Llama-3.1-8B-Instruct --label fp16-cuda --device cuda
+python mmlu_torch.py       --model meta-llama/Llama-3.1-8B-Instruct --label fp16-cuda --device cuda
+python throughput_torch.py --model meta-llama/Llama-3.1-8B-Instruct --label fp16-cuda --device cuda
+```
+
+That control run is a gate, not a formality. Its perplexity should land near 7.365, the figure the same loop produced on the M4 Pro. If it does not, stop and find out why before trusting anything measured afterwards.
+
+Before the real quantization run, smoke-test the pipeline. `llmcompressor` moves fast enough that an API change is the likeliest failure, and it costs two minutes to find out:
+
+```bash
+python quantize.py --hf-dir meta-llama/Llama-3.1-8B-Instruct --num-samples 8 --max-seq-len 512 --out-dir /tmp/awq-smoke --label awq-smoke
 ```

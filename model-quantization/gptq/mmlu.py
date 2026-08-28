@@ -16,23 +16,22 @@ import time
 from pathlib import Path
 
 import lm_eval
-import torch
 from lm_eval.models.huggingface import HFLM
 from loguru import logger
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoTokenizer
 
 import torch_device
 from mmlu_tasks import LIMIT_PER_TASK, TASKS
 from results_io import update
 
 
-def run(model_id: str, tokenizer_id: str, device: str, out_dir: Path) -> dict:
+def run(model_id: str, tokenizer_id: str, device: str, out_dir: Path, dtype: str) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     logger.info(f"loading {model_id} on {torch_device.describe(device)}")
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_id)
     # Loaded onto CPU and then moved, rather than device_map=device: accelerate's dispatch path is pathologically slow for an 8B model on MPS (ten minutes and still loading), and a single-GPU 8B model needs no sharding anyway. Same pattern the HQQ scripts use.
-    model = AutoModelForCausalLM.from_pretrained(model_id, dtype=torch.float16).to(device)
+    model = torch_device.load_causal_lm(model_id, device, dtype)
     lm = HFLM(pretrained=model, tokenizer=tokenizer, backend="causal", device=device, batch_size=1)
 
     logger.info(f"running lm_eval: {len(TASKS)} tasks x {LIMIT_PER_TASK} questions")
@@ -71,6 +70,8 @@ if __name__ == "__main__":
     parser.add_argument("--tokenizer", help="local HF snapshot dir or hub repo id; defaults to --model")
     parser.add_argument("--label", required=True, help="checkpoint label, e.g. awq-q4")
     parser.add_argument("--device", default="auto", choices=["auto", "cuda", "mps", "cpu"])
+    parser.add_argument("--dtype", default="auto", choices=["auto", "float16", "bfloat16"],
+                        help="quantized checkpoints keep their own dtype")
     parser.add_argument("--out-dir", default="../results/mmlu_raw")
     args = parser.parse_args()
 
@@ -79,5 +80,6 @@ if __name__ == "__main__":
         args.tokenizer or args.model,
         torch_device.resolve(args.device),
         Path(args.out_dir) / args.label,
+        args.dtype,
     )
     update(args.label, "mmlu", stats)

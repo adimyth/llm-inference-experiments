@@ -56,4 +56,12 @@ python mmlu.py       --model ../models/llama-3.1-8b-instruct-gptq-q4 --label gpt
 python throughput.py --model ../models/llama-3.1-8b-instruct-gptq-q4 --label gptq-q4 --device cuda
 ```
 
-Run the fp16 control on the same GPU first (see `../awq/README.md`); one control covers both methods.
+The benchmark scripts default to `--dtype auto`, so the checkpoint's own quantization config decides its dtype. Do not force `float16` on them.
+
+Run the fp16 control on the same GPU first (see `../awq/README.md`); one control covers both methods, and its perplexity should land near 7.365.
+
+Smoke-test before the real run, same as AWQ:
+
+```bash
+python quantize.py --hf-dir meta-llama/Llama-3.1-8B-Instruct --num-samples 8 --max-seq-len 512 --out-dir /tmp/gptq-smoke --label gptq-smoke
+```

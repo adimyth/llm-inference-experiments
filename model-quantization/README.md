@@ -6,7 +6,7 @@ Essay: [LLM Inference: Post-Training Quantization](https://adimyth.in/essays/llm
 
 **Model**: `meta-llama/Llama-3.1-8B-Instruct`. Not the original 3.0 release, which is a separately gated repo on the same account; 3.1 was already approved.
 
-**Hardware, and why there are two sets.** Five methods run on a MacBook Pro, Apple M4 Pro, 48GB, with llama.cpp built via arm64 Homebrew with Metal. AWQ and GPTQ have no Metal or MPS path at all and need an NVIDIA GPU. Size, perplexity and MMLU are hardware-independent and compare directly across the two. **Tokens/sec does not.** A CUDA checkpoint's speed is only meaningful against an fp16 control run on that same GPU.
+**Hardware, and why there are two sets.** Five methods run on a MacBook Pro, Apple M4 Pro, 48GB, with llama.cpp built via arm64 Homebrew with Metal. AWQ and GPTQ have no Metal or MPS path at all and need an NVIDIA GPU. Size, perplexity and MMLU are hardware-independent and compare directly across the two. **Tokens/sec does not.** A CUDA checkpoint's speed is only meaningful against an fp16 control run on that same GPU, which is why `plot.py` keeps `awq-q4` and `gptq-q4` out of the generation-speed chart entirely.
 
 ---
 
@@ -87,13 +87,15 @@ Provider-agnostic. It needs a machine with an NVIDIA driver and nothing else, wh
 
 ```bash
 export HF_TOKEN=hf_...
-bash setup_cuda.sh          # uv venv, pinned deps, nvidia-smi + torch smoke test
+bash setup_cuda.sh          # uv venv, deps, nvidia-smi + torch smoke test
 source .venv-cuda/bin/activate
 python fetch_wikitext.py
 hf download meta-llama/Llama-3.1-8B-Instruct
 ```
 
 Requirements: >=24GB VRAM (48GB comfortable, the calibration pass holds the fp16 model plus per-layer Hessians and activations), ~120GB disk.
+
+The first run resolves the latest packages and writes `requirements-cuda.lock`. Commit that file; later runs install from it, so the environment behind the numbers is repeatable.
 
 Run the fp16 control on the GPU **first**, so the AWQ and GPTQ speed numbers have a baseline on the same hardware, then follow `awq/README.md` and `gptq/README.md`.
 

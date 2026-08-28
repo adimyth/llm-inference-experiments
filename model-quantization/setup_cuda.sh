@@ -33,21 +33,28 @@ export PATH="$HOME/.local/bin:$PATH"
 echo "==> venv"
 [ -d .venv-cuda ] || uv venv --python 3.12 .venv-cuda
 
-# Versions are pinned rather than floating. llmcompressor moves fast, and an
-# essay whose numbers can't be reproduced six months later isn't worth much.
-# Bump these deliberately, and re-record them in README.md when you do.
+# Reproducibility: install from requirements-cuda.lock when it exists, otherwise resolve the latest and write the lock so the next run repeats this one. llmcompressor moves fast, so an essay whose numbers can't be reproduced in six months isn't worth much. Commit the lock file after a successful run.
 echo "==> dependencies"
-uv pip install --python .venv-cuda \
-  "torch" \
-  "transformers" \
-  "llmcompressor" \
-  "compressed-tensors" \
-  "datasets" \
-  "accelerate" \
-  "lm_eval" \
-  "loguru" \
-  "numpy" \
-  "huggingface_hub[cli]"
+LOCK=requirements-cuda.lock
+if [ -f "$LOCK" ]; then
+  echo "installing from $LOCK"
+  uv pip install --python .venv-cuda -r "$LOCK"
+else
+  echo "no $LOCK yet, resolving latest"
+  uv pip install --python .venv-cuda \
+    "torch" \
+    "transformers" \
+    "llmcompressor" \
+    "compressed-tensors" \
+    "datasets" \
+    "accelerate" \
+    "lm_eval" \
+    "loguru" \
+    "numpy" \
+    "huggingface_hub[cli]"
+  uv pip freeze --python .venv-cuda > "$LOCK"
+  echo "wrote $LOCK - commit it so this environment is repeatable"
+fi
 
 echo "==> smoke test"
 .venv-cuda/bin/python - <<'PY'
@@ -59,8 +66,8 @@ print("llmcompressor", llmcompressor.__version__)
 print("transformers", transformers.__version__)
 PY
 
-echo "==> installed versions (record these in README.md)"
-uv pip freeze --python .venv-cuda | grep -Ei '^(torch|transformers|llmcompressor|compressed-tensors|lm[-_]eval|datasets|accelerate)=' || true
+echo "==> key versions"
+uv pip freeze --python .venv-cuda | grep -Ei '^(torch|transformers|llmcompressor|compressed-tensors|lm[-_]eval|datasets|accelerate)==' || true
 
 if [ -z "${HF_TOKEN:-}" ]; then
   echo

@@ -18,17 +18,17 @@ from statistics import median
 
 import torch
 from loguru import logger
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoTokenizer
 
 import torch_device
 from results_io import update
 
 
-def run(model_id: str, tokenizer_id: str, device: str, n_prompt: int, n_gen: int, repeats: int) -> dict:
+def run(model_id: str, tokenizer_id: str, device: str, n_prompt: int, n_gen: int, repeats: int, dtype: str) -> dict:
     logger.info(f"loading {model_id} on {torch_device.describe(device)}")
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_id)
     # Loaded onto CPU and then moved, rather than device_map=device: accelerate's dispatch path is pathologically slow for an 8B model on MPS (ten minutes and still loading), and a single-GPU 8B model needs no sharding anyway. Same pattern the HQQ scripts use.
-    model = AutoModelForCausalLM.from_pretrained(model_id, dtype=torch.float16).to(device)
+    model = torch_device.load_causal_lm(model_id, device, dtype)
     model.eval()
 
     prompt_text = tokenizer.apply_chat_template(
@@ -88,6 +88,8 @@ if __name__ == "__main__":
     parser.add_argument("--tokenizer", help="local HF snapshot dir or hub repo id; defaults to --model")
     parser.add_argument("--label", required=True, help="checkpoint label, e.g. awq-q4")
     parser.add_argument("--device", default="auto", choices=["auto", "cuda", "mps", "cpu"])
+    parser.add_argument("--dtype", default="auto", choices=["auto", "float16", "bfloat16"],
+                        help="quantized checkpoints keep their own dtype")
     parser.add_argument("--n-prompt", type=int, default=512)
     parser.add_argument("--n-gen", type=int, default=128)
     parser.add_argument("--repeats", type=int, default=5)
@@ -100,5 +102,6 @@ if __name__ == "__main__":
         args.n_prompt,
         args.n_gen,
         args.repeats,
+        args.dtype,
     )
     update(args.label, "throughput", stats)

@@ -15,6 +15,8 @@ No single tool reads every format in this project, so perplexity is measured two
 | `perplexity.py` | `llama-perplexity` (llama.cpp) | fp16, RTN, k-quants (GGUF) |
 | `perplexity_torch.py` | PyTorch + transformers | fp16, AWQ, GPTQ, and siblings for MLX and HQQ |
 
+`mmlu_torch.py` and `throughput_torch.py` sit alongside them for the same reason. `mmlu.py` and `throughput.py` go through llama.cpp and read only GGUF, which is all the Mac needs; the `_torch` copies run the unquantized model on a CUDA box so AWQ and GPTQ have a speed baseline measured on their own hardware.
+
 Running **both** against the same fp16 weights is what proves a GGUF checkpoint's perplexity is comparable to an MLX or AWQ one:
 
 | Implementation | Perplexity |
