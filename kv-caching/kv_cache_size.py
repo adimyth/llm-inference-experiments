@@ -1,8 +1,6 @@
 """KV cache size from model shape.
 
-Pure arithmetic. No model is loaded and nothing is downloaded. This computes
-what the cache *would* cost for a given architecture, from published config
-values (layer count, KV head count, head dimension).
+Pure arithmetic. No model is loaded and nothing is downloaded. This computes what the cache *would* cost for a given architecture, from published config values (layer count, KV head count, head dimension).
 """
 
 from loguru import logger

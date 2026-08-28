@@ -1,12 +1,8 @@
 """One forward pass gives one prediction per position, not one prediction.
 
-This is what makes verification cheap. Attention is causal, so position i sees
-only positions <= i and its answer does not depend on any position after it.
-All N predictions are therefore independent and computed together.
+This is what makes verification cheap. Attention is causal, so position i sees only positions <= i and its answer does not depend on any position after it. All N predictions are therefore independent and computed together.
 
-While writing, you cannot use this: the prediction after position 3 needs the
-token at position 3, which is what you were trying to produce. A draft model
-supplies those tokens as guesses, and checking them becomes one pass.
+While writing, you cannot use this: the prediction after position 3 needs the token at position 3, which is what you were trying to produce. A draft model supplies those tokens as guesses, and checking them becomes one pass.
 """
 
 import argparse

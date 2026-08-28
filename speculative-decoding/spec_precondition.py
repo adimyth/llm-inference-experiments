@@ -1,8 +1,6 @@
 """Why speculative decoding can work at all.
 
-Generation is serial: token N+1 needs token N. Verification is not. This measures
-how much a forward pass costs as a function of how many tokens it checks at once.
-The gap between those two is the entire budget speculative decoding spends.
+Generation is serial: token N+1 needs token N. Verification is not. This measures how much a forward pass costs as a function of how many tokens it checks at once. The gap between those two is the entire budget speculative decoding spends.
 
 No draft model, no speculation. One model, warm cache, varying batch of positions.
 """

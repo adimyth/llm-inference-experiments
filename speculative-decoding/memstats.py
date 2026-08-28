@@ -1,8 +1,6 @@
 """Host RAM and Metal VRAM around a block of work.
 
-torch.mps.current_allocated_memory is what tensors hold; driver_allocated_memory is
-what Metal has reserved from the system, which is the number that decides whether
-you are about to swap.
+torch.mps.current_allocated_memory is what tensors hold; driver_allocated_memory is what Metal has reserved from the system, which is the number that decides whether you are about to swap.
 """
 
 from dataclasses import dataclass

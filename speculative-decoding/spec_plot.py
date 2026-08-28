@@ -1,8 +1,6 @@
 """Charts for results/results.json.
 
-Speedup, acceptance and discarded tokens are three different scales, so they get
-three stacked panels sharing the k axis rather than one chart with two y-axes.
-Light and dark are separate renders, not an inverted image.
+Speedup, acceptance and discarded tokens are three different scales, so they get three stacked panels sharing the k axis rather than one chart with two y-axes. Light and dark are separate renders, not an inverted image.
 """
 
 import json

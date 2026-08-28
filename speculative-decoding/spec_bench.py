@@ -1,10 +1,8 @@
 """Full speculative decoding benchmark: k sweep and workload sweep, with repeats.
 
-Every cell is the median of REPEATS runs. Single runs were noisy enough to produce
-non-monotonic acceptance, which is a measurement artefact rather than a finding.
+Every cell is the median of REPEATS runs. Single runs were noisy enough to produce non-monotonic acceptance, which is a measurement artefact rather than a finding.
 
-Writes results/results.json for plotting and records memory around model load and
-around the run itself.
+Writes results/results.json for plotting and records memory around model load and around the run itself.
 """
 
 import argparse

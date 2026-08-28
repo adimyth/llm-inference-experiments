@@ -1,12 +1,8 @@
 """Speculative decoding, hand-rolled and instrumented.
 
-transformers computes acceptance internally and never surfaces it, so the loop is
-written out here to expose what it costs: draft forward passes spent, draft tokens
-discarded, and target forward passes saved.
+transformers computes acceptance internally and never surfaces it, so the loop is written out here to expose what it costs: draft forward passes spent, draft tokens discarded, and target forward passes saved.
 
-Greedy only. Under sampling the accept test becomes the rejection-sampling rule from
-Leviathan et al. (arXiv 2211.17192), which is what preserves the output distribution
-exactly; the greedy version below is the same idea with an argmax comparison.
+Greedy only. Under sampling the accept test becomes the rejection-sampling rule from Leviathan et al. (arXiv 2211.17192), which is what preserves the output distribution exactly; the greedy version below is the same idea with an argmax comparison.
 """
 
 import argparse
@@ -81,8 +77,7 @@ def speculative(target, draft, ids, n_tokens, k):
     """Draft k tokens, verify them in ONE target pass, keep the longest prefix the
     target agrees with, and take the target's own next token for free.
 
-    The correction token is not verified in its own pass. It rides along at the front
-    of the next round's verify input, so the target runs exactly once per round.
+    The correction token is not verified in its own pass. It rides along at the front of the next round's verify input, so the target runs exactly once per round.
     """
     s = Stats()
     dev = ids.device.type
@@ -94,8 +89,7 @@ def speculative(target, draft, ids, n_tokens, k):
         if extra > 0:
             cache.crop(-extra)
 
-    # target cache holds everything except the last token; that one is "pending".
-    # A one-token prompt would leave nothing to prefill, so seed an empty cache.
+    # target cache holds everything except the last token; that one is "pending". A one-token prompt would leave nothing to prefill, so seed an empty cache.
     if ids.shape[1] > 1:
         t_past = target(ids[:, :-1], use_cache=True).past_key_values
     else:
@@ -125,8 +119,7 @@ def speculative(target, draft, ids, n_tokens, k):
         t_past, logits = t_out.past_key_values, t_out.logits
         s.target_passes += 1
 
-        # 3. compare all k slots on-device in one shot. Doing this with a Python
-        #    loop costs k GPU syncs per round via .item(); this costs one.
+        # 3. compare all k slots on-device in one shot. Doing this with a Python    loop costs k GPU syncs per round via .item(); this costs one.
         choices = logits[0, :k].argmax(-1)
         run = (cand_t[0] == choices).cumprod(0)
         n_acc = int(run.sum().item())

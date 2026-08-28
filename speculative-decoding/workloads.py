@@ -1,9 +1,6 @@
 """The prompts the experiments run against, ordered by how predictable they are.
 
-Acceptance is how often the small draft guesses what the large target would have
-said, so it depends on the text. These five span the range deliberately: a fixed
-schedule the draft over-generalises, prose it must genuinely predict, and code
-where the next token is often forced by syntax.
+Acceptance is how often the small draft guesses what the large target would have said, so it depends on the text. These five span the range deliberately: a fixed schedule the draft over-generalises, prose it must genuinely predict, and code where the next token is often forced by syntax.
 """
 
 WORKLOADS = {

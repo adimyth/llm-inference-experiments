@@ -1,7 +1,6 @@
 """Generation with and without the KV cache, timed back to back.
 
-Downloads GPT-2 (~526MB) on first run. Everything runs on CPU so the
-comparison is not distorted by accelerator scheduling.
+Downloads GPT-2 (~526MB) on first run. Everything runs on CPU so the comparison is not distorted by accelerator scheduling.
 """
 
 import statistics

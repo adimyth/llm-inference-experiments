@@ -1,12 +1,8 @@
 """Does a bigger draft help? Two drafts, one target.
 
-A larger draft agrees with the target more often, so more of its guesses survive.
-It also costs more per guess. Leviathan et al. found the smaller of their two
-drafts won on wall clock despite agreeing less, which is the trade this measures.
+A larger draft agrees with the target more often, so more of its guesses survive. It also costs more per guess. Leviathan et al. found the smaller of their two drafts won on wall clock despite agreeing less, which is the trade this measures.
 
-Both drafts must share the target's tokenizer. A GPT-2 draft cannot be paired with
-a Qwen target at all: token 464 is "The" in one vocabulary and four tabs in the
-other, so the comparison the loop performs would be meaningless.
+Both drafts must share the target's tokenizer. A GPT-2 draft cannot be paired with a Qwen target at all: token 464 is "The" in one vocabulary and four tabs in the other, so the comparison the loop performs would be meaningless.
 """
 
 import argparse

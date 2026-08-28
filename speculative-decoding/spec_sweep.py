@@ -2,14 +2,11 @@
 
 Leviathan et al. (arXiv 2211.17192) give the expected walltime improvement as
 
-    IF(a, g, c) = (1 - a**(g+1)) / ((1 - a) * (g*c + 1))
+IF(a, g, c) = (1 - a**(g+1)) / ((1 - a) * (g*c + 1))
 
-with a the acceptance rate, g the draft length and c the cost coefficient, meaning
-draft forward pass time over target forward pass time. The numerator saturates at
-1/(1-a) while the denominator grows linearly in g: bounded benefit, unbounded cost.
+with a the acceptance rate, g the draft length and c the cost coefficient, meaning draft forward pass time over target forward pass time. The numerator saturates at 1/(1-a) while the denominator grows linearly in g: bounded benefit, unbounded cost.
 
-This measures a and c for a real pair, predicts the optimal k from the formula, then
-sweeps k and checks whether the measured optimum lands where the theory says.
+This measures a and c for a real pair, predicts the optimal k from the formula, then sweeps k and checks whether the measured optimum lands where the theory says.
 """
 
 import argparse

@@ -1,8 +1,6 @@
 """Measure the KV cache instead of computing it.
 
-Generates with the cache on and reads the actual tensors the model keeps,
-then checks them against the formula in kv_cache_size.py. Confirms that the
-arithmetic used to size a serving fleet is the arithmetic the runtime does.
+Generates with the cache on and reads the actual tensors the model keeps, then checks them against the formula in kv_cache_size.py. Confirms that the arithmetic used to size a serving fleet is the arithmetic the runtime does.
 """
 
 import torch
@@ -17,8 +15,7 @@ DEFAULTS = {"model": "gpt2", "prompt_tokens": 64, "checkpoints": (0, 64, 256, 51
 def iter_kv(past):
     """Yield every K and V tensor in the cache.
 
-    transformers >=5 returns a DynamicCache whose .layers hold .keys/.values.
-    Older versions return a plain tuple of (key, value) pairs per layer.
+    transformers >=5 returns a DynamicCache whose .layers hold .keys/.values. Older versions return a plain tuple of (key, value) pairs per layer.
     """
     layers = getattr(past, "layers", past)
     for layer in layers:
