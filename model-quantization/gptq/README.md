@@ -36,14 +36,27 @@ Same bit width, same group size, same calibration set. Different strategy.
 | --- | --- |
 | Scheme | `W4A16` (4-bit weights, fp16 activations) |
 | Group size | **128** |
+| Zero-point | **no**, `symmetric: true` |
+| Block size | 128 |
+| Dampening | `dampening_frac: 0.01` |
+| Activation order | `static` |
+| Observer | `memoryless_minmax` |
 | Calibration | `HuggingFaceH4/ultrachat_200k`, 256 samples, 2048 tokens, seed 42 |
 | Ignored | `lm_head` |
+
+Read back out of the produced checkpoint, not from the docs. The raw files are in
+[`../results/checkpoint_configs/gptq-q4/`](../results/checkpoint_configs/gptq-q4/).
+
+**The zero-point is the difference that matters when comparing against AWQ.** AWQ's default
+scheme is asymmetric and stores an offset per group; this one does not. The two methods
+therefore differ by scheme as well as by algorithm, which is why the essay reads the gap as
+"AWQ as shipped beat GPTQ as shipped" rather than as a verdict on the algorithms.
 
 Group size 128 is the default every shipped GPTQ checkpoint uses, not the 64 that `../mlx/` and `../hqq/` use.
 
 `../awq/quantize.py` builds the identical calibration set with the same seed, so the two methods differ by algorithm and not by data.
 
-Expect GPTQ to take longer than AWQ. The Hessian solve is heavier than AWQ's activation-magnitude pass.
+Measured, GPTQ quantized *faster* than AWQ on the same box, 13m 10s against 14m 22s, despite the per-column Hessian solve sounding heavier. It also ran at about 18% GPU utilisation against AWQ's 100%, because the solve is serial work that cannot fill the device.
 
 ## Tooling
 

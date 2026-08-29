@@ -27,10 +27,17 @@ The rounding itself stays ordinary. What changes is where the grid's precision g
 
 | | |
 | --- | --- |
-| Scheme | `W4A16_ASYM` (4-bit weights, fp16 activations, asymmetric) |
+| Scheme | `W4A16_ASYM` (4-bit weights, fp16 activations) |
 | Group size | **128** |
+| Zero-point | yes, `symmetric: false`, one offset per group |
+| Observer | `memoryless_minmax` |
+| Format | `pack-quantized` |
+| Scale search | 20 candidates per mapping (`n_grid: 20`), `duo_scaling: true` |
 | Calibration | `HuggingFaceH4/ultrachat_200k`, 256 samples, 2048 tokens, seed 42 |
 | Ignored | `lm_head` |
+
+Read back out of the produced checkpoint, not from the docs. The raw files are in
+[`../results/checkpoint_configs/awq-q4/`](../results/checkpoint_configs/awq-q4/).
 
 Group size 128 is the default every shipped AWQ checkpoint uses, not the 64 that `../mlx/` and `../hqq/` use. "4-bit" alone doesn't specify a scheme, and group size is the parameter most model cards leave out.
 

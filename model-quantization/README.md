@@ -183,6 +183,8 @@ Neither is wrong. They are not the same measurement. MLX's 10.12 and HQQ's 9.96 
 
 **`lm_eval --limit N` is a positional slice, not a random sample.** Verified against its source. This is what makes "the same 50 questions" true.
 
+**A method folder named after a real package will be imported as one.** The folders `mlx/` and `hqq/` share their names with real PyPI packages, and every script puts the repo root on `sys.path` to import the shared helpers. That makes `importlib.util.find_spec("mlx")` succeed on an empty namespace package, so `transformers` evaluates `is_mlx_available()` as True at import time and caches it. Ordinary forward passes never reach the MLX branch of `is_tensor`, because real torch tensors match earlier. `llmcompressor`'s fx tracing does reach it, because Proxy objects match nothing, and the run dies with `ModuleNotFoundError: No module named 'mlx.core'` on a Linux box with no MLX installed anywhere. Import `transformers` before the root goes on `sys.path`, or remove the root once the helpers are loaded, which is what `awq/quantize.py` and `gptq/quantize.py` now do.
+
 **HQQ defaults to `device='cuda'` everywhere.** On a Mac it either crashes or reloads onto the wrong device with no warning. Pass `device='mps'` explicitly on every call.
 
 **`llama-cpp-python` can build x86_64 on an arm64 Mac without saying so** if `/usr/local/bin/cmake` shadows the arm64 one on PATH, producing a `.dylib` the venv can't load. Force the arm64 `cmake` onto PATH for the build.
