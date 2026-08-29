@@ -26,8 +26,8 @@ THEMES = {
 LABEL_ORDER = ["fp16", "rtn-q4_0", "q4_k_m", "q5_k_m", "q8_0", "mlx-q4", "hqq-q4",
                "awq-q4", "gptq-q4"]
 
-# Control runs, not checkpoints. `fp16-torch` and `fp16-cuda` re-measure the *unquantized* model through the PyTorch windowing loop rather than through llama-perplexity, to prove the two perplexity implementations agree, and `fp16-cuda` is also the only valid speed baseline for the AWQ and GPTQ numbers (measured on a different machine). They belong in results.json and in the README, not as bars alongside the quantized checkpoints.
-CONTROL_LABELS = {"fp16-torch", "fp16-cuda"}
+# Control runs, not checkpoints. Each of these re-measures the *unquantized* model through one of the non-llama.cpp engines, to prove that engine's perplexity implementation agrees with the others before any quantized number from it is trusted. `fp16-torch` covers the PyTorch loop on MPS, `fp16-cuda` the same loop on CUDA (and it is also the only valid speed baseline for AWQ and GPTQ, measured on a different machine), `fp16-mlx` the MLX loop, which is a genuinely separate framework and was the last one still unvalidated. They belong in results.json and in the README, not as bars alongside the quantized checkpoints.
+CONTROL_LABELS = {"fp16-torch", "fp16-cuda", "fp16-mlx"}
 DISPLAY_NAME = {
     "fp16": "fp16",
     "rtn-q4_0": "RTN Q4_0",
@@ -45,6 +45,12 @@ DISPLAY_NAME = {
 LABEL_NUDGE = {
     "rtn-q4_0": (0, -22, "center"),
     "q8_0": (12, -16, "left"),
+    # AWQ (5.35, 7.792) and HQQ (5.61, 7.815) are close on both axes, so AWQ's label
+    # goes down and to the right: directly below would crowd RTN's, which also sits low. GPTQ (5.33, 7.959) and MLX (4.22,
+    # 7.949) are nearly level, so MLX's label goes out to the left instead of running
+    # into GPTQ's point.
+    "awq-q4": (13, -16, "left"),
+    "mlx-q4": (-10, 8, "right"),
 }
 
 def ordered_labels(res):
@@ -69,7 +75,12 @@ def bar_chart(res, theme, metric_key, extract, colour_key, fmt, title, subtitle,
     labels = [l for l in ordered_labels(res) if metric_key in res[l] and l not in exclude]
     values = [extract(res[l]) for l in labels]
 
-    fig, ax = plt.subplots(figsize=(9.5, 5.6), facecolor=t["surface"])
+    # Width scales with the number of bars. At a fixed 9.5in the ninth method made
+    # "AWQ 4-bit" and "GPTQ 4-bit" run into each other, so adding a method silently
+    # degraded every chart it appeared in. Growing the canvas instead keeps the bars
+    # and type at a constant size however many methods land here later.
+    fig_w = max(9.5, 1.15 * len(labels) + 2.0)
+    fig, ax = plt.subplots(figsize=(fig_w, 5.6), facecolor=t["surface"])
     style(ax, t)
     xs = range(len(labels))
     ax.bar(list(xs), values, width=0.55, color=t[colour_key],

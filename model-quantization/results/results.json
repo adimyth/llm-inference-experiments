@@ -49,6 +49,13 @@
       "n_questions": 50,
       "n_tasks": 10,
       "wall_seconds": 39.702430749777704
+    },
+    "mmlu_200": {
+      "accuracy": 0.775,
+      "n_questions": 200,
+      "n_tasks": 10,
+      "limit_per_task": 20,
+      "wall_seconds": 267.64758191599685
     }
   },
   "q4_k_m": {
@@ -127,6 +134,130 @@
       "ctx_size": 512,
       "scored_per_chunk": 256,
       "device": "mps"
+    }
+  },
+  "fp16-cuda": {
+    "perplexity": {
+      "ppl": 7.364857890198593,
+      "n_chunks": 564,
+      "ctx_size": 512,
+      "scored_per_chunk": 256,
+      "n_tokens_scored": 144384,
+      "device": "cuda",
+      "dtype": "float16",
+      "engine": "transformers"
+    },
+    "mmlu": {
+      "accuracy": 0.82,
+      "n_questions": 50,
+      "n_tasks": 10,
+      "wall_seconds": 69.18372216600005,
+      "device": "cuda"
+    },
+    "throughput": {
+      "pp_tokens_per_sec": 9191.239635571901,
+      "tg_tokens_per_sec": 38.0961785152773,
+      "device": "cuda"
+    },
+    "mmlu_200": {
+      "accuracy": 0.765,
+      "n_questions": 200,
+      "n_tasks": 10,
+      "limit_per_task": 20,
+      "wall_seconds": 38.86466696699972,
+      "device": "cuda"
+    }
+  },
+  "awq-q4": {
+    "size_gb": 5.350623214617372,
+    "quantization": {
+      "method": "awq",
+      "bits": 4,
+      "group_size": 128,
+      "calibration_dataset": "HuggingFaceH4/ultrachat_200k",
+      "calibration_samples": 256,
+      "max_seq_length": 2048
+    },
+    "perplexity": {
+      "ppl": 7.792040190157,
+      "n_chunks": 564,
+      "ctx_size": 512,
+      "scored_per_chunk": 256,
+      "n_tokens_scored": 144384,
+      "device": "cuda",
+      "dtype": "auto",
+      "engine": "transformers"
+    },
+    "mmlu": {
+      "accuracy": 0.78,
+      "n_questions": 50,
+      "n_tasks": 10,
+      "wall_seconds": 47.864561389999835,
+      "device": "cuda"
+    },
+    "throughput": {
+      "pp_tokens_per_sec": 9171.976859121878,
+      "tg_tokens_per_sec": 33.366132241328465,
+      "device": "cuda"
+    },
+    "mmlu_200": {
+      "accuracy": 0.77,
+      "n_questions": 200,
+      "n_tasks": 10,
+      "limit_per_task": 20,
+      "wall_seconds": 31.224603017000845,
+      "device": "cuda"
+    }
+  },
+  "gptq-q4": {
+    "size_gb": 5.32520632725209,
+    "quantization": {
+      "method": "gptq",
+      "bits": 4,
+      "group_size": 128,
+      "calibration_dataset": "HuggingFaceH4/ultrachat_200k",
+      "calibration_samples": 256,
+      "max_seq_length": 2048
+    },
+    "perplexity": {
+      "ppl": 7.9587501486733885,
+      "n_chunks": 564,
+      "ctx_size": 512,
+      "scored_per_chunk": 256,
+      "n_tokens_scored": 144384,
+      "device": "cuda",
+      "dtype": "auto",
+      "engine": "transformers"
+    },
+    "mmlu": {
+      "accuracy": 0.76,
+      "n_questions": 50,
+      "n_tasks": 10,
+      "wall_seconds": 25.42527269400034,
+      "device": "cuda"
+    },
+    "throughput": {
+      "pp_tokens_per_sec": 9194.455220477477,
+      "tg_tokens_per_sec": 32.90237790189339,
+      "device": "cuda"
+    },
+    "mmlu_200": {
+      "accuracy": 0.75,
+      "n_questions": 200,
+      "n_tasks": 10,
+      "limit_per_task": 20,
+      "wall_seconds": 30.995638626000073,
+      "device": "cuda"
+    }
+  },
+  "fp16-mlx": {
+    "perplexity": {
+      "ppl": 7.364226171744394,
+      "n_chunks": 564,
+      "ctx_size": 512,
+      "scored_per_chunk": 256,
+      "n_tokens_scored": 144384,
+      "engine": "mlx"
     }
   }
 }

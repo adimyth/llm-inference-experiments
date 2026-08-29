@@ -12,7 +12,23 @@ Output is a `compressed-tensors` checkpoint directory that plain `AutoModelForCa
 import sys
 from pathlib import Path as _Path
 
-sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+# Put the repo root on sys.path only long enough to import the shared helper, then
+# take it back off, and do it BEFORE transformers is imported.
+#
+# The root must not be on sys.path when transformers initialises. It holds method
+# folders named `mlx/` and `hqq/`, which are also real package names, so
+# importlib.util.find_spec("mlx") succeeds on an empty namespace package.
+# transformers evaluates is_mlx_available() once at import time and caches True,
+# and then the first time is_tensor() falls through to its MLX branch the process
+# dies with `ModuleNotFoundError: No module named 'mlx.core'`. Normal forward
+# passes never reach that branch because real torch tensors match earlier, but
+# llmcompressor's sequential pipeline traces the model with torch.fx, and Proxy
+# objects match nothing until the MLX check. Verified: import transformers first
+# and is_mlx_available() stays False even if the root is added afterwards.
+_ROOT = str(_Path(__file__).resolve().parent.parent)
+sys.path.insert(0, _ROOT)
+from results_io import update  # noqa: E402
+sys.path.remove(_ROOT)
 
 import argparse
 from pathlib import Path
@@ -23,8 +39,6 @@ from llmcompressor.modifiers.transform.awq import AWQModifier
 from llmcompressor.modifiers.quantization import QuantizationModifier
 from loguru import logger
 from transformers import AutoModelForCausalLM, AutoTokenizer
-
-from results_io import update
 
 # 4-bit weights, fp16 activations, group size 128. 128 is the default every shipped AWQ and GPTQ checkpoint uses, and deliberately NOT the 64 that MLX and HQQ use elsewhere in this project: "4-bit" alone doesn't specify a scheme, and group size is the parameter that usually goes unstated. Changing it means building a custom QuantizationScheme rather than naming one of the presets.
 GROUP_SIZE = 128

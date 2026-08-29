@@ -1,0 +1,72 @@
+{
+  "mmlu_high_school_physics": {
+    "name": "mmlu_high_school_physics",
+    "alias": "high_school_physics",
+    "sample_len": 20,
+    "acc,none": 0.65,
+    "acc_stderr,none": 0.1094243309804831
+  },
+  "mmlu_high_school_chemistry": {
+    "name": "mmlu_high_school_chemistry",
+    "alias": "high_school_chemistry",
+    "sample_len": 20,
+    "acc,none": 0.65,
+    "acc_stderr,none": 0.1094243309804831
+  },
+  "mmlu_high_school_biology": {
+    "name": "mmlu_high_school_biology",
+    "alias": "high_school_biology",
+    "sample_len": 20,
+    "acc,none": 0.85,
+    "acc_stderr,none": 0.08191780219091253
+  },
+  "mmlu_high_school_us_history": {
+    "name": "mmlu_high_school_us_history",
+    "alias": "high_school_us_history",
+    "sample_len": 20,
+    "acc,none": 0.85,
+    "acc_stderr,none": 0.08191780219091253
+  },
+  "mmlu_philosophy": {
+    "name": "mmlu_philosophy",
+    "alias": "philosophy",
+    "sample_len": 20,
+    "acc,none": 0.8,
+    "acc_stderr,none": 0.0917662935482247
+  },
+  "mmlu_world_religions": {
+    "name": "mmlu_world_religions",
+    "alias": "world_religions",
+    "sample_len": 20,
+    "acc,none": 0.85,
+    "acc_stderr,none": 0.08191780219091253
+  },
+  "mmlu_high_school_geography": {
+    "name": "mmlu_high_school_geography",
+    "alias": "high_school_geography",
+    "sample_len": 20,
+    "acc,none": 0.85,
+    "acc_stderr,none": 0.08191780219091253
+  },
+  "mmlu_high_school_psychology": {
+    "name": "mmlu_high_school_psychology",
+    "alias": "high_school_psychology",
+    "sample_len": 20,
+    "acc,none": 0.8,
+    "acc_stderr,none": 0.0917662935482247
+  },
+  "mmlu_professional_medicine": {
+    "name": "mmlu_professional_medicine",
+    "alias": "professional_medicine",
+    "sample_len": 20,
+    "acc,none": 0.75,
+    "acc_stderr,none": 0.09933992677987828
+  },
+  "mmlu_marketing": {
+    "name": "mmlu_marketing",
+    "alias": "marketing",
+    "sample_len": 20,
+    "acc,none": 0.7,
+    "acc_stderr,none": 0.10513149660756936
+  }
+}

@@ -2,9 +2,18 @@
 
 Activation-aware Weight Quantization. The first method in this project that looks at anything other than the weights.
 
-> **Status: not yet run.** The scripts here are complete and the environment
-> is reproducible via `../setup_cuda.sh`, but no AWQ numbers are in
-> `../results/results.json` yet. This needs an NVIDIA GPU.
+> **Status: measured.** Run on a rented NVIDIA L40S (48GB), driver 595.91.07,
+> CUDA 13.2, with the exact package set pinned in `../requirements-cuda.lock`.
+>
+> | | |
+> | --- | --- |
+> | Perplexity | **7.792** (+5.8% vs the fp16 control's 7.3649) |
+> | MMLU, 50q / 200q | 78.0% / 77.0% |
+> | Size on disk | 5.35 GB |
+> | Quantization time | 14m 22s |
+>
+> The applied config is captured in `../results/checkpoint_configs/awq-q4/`, read
+> back out of the checkpoint itself rather than from the docs.
 
 ## How it works
 

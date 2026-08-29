@@ -25,17 +25,17 @@ from mmlu_tasks import LIMIT_PER_TASK, TASKS
 from results_io import update
 
 
-def run(model_path: Path, out_dir: Path) -> dict:
+def run(model_path: Path, out_dir: Path, limit_per_task: int = LIMIT_PER_TASK) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
     lm = MLXLM(str(model_path), use_chat_template=False)
 
-    logger.info(f"running lm_eval: {len(TASKS)} tasks x {LIMIT_PER_TASK} questions")
+    logger.info(f"running lm_eval: {len(TASKS)} tasks x {limit_per_task} questions")
     start = time.perf_counter()
     results = lm_eval.simple_evaluate(
         model=lm,
         tasks=TASKS,
         apply_chat_template=False,
-        limit=LIMIT_PER_TASK,
+        limit=limit_per_task,
     )
     wall = time.perf_counter() - start
 
@@ -44,7 +44,7 @@ def run(model_path: Path, out_dir: Path) -> dict:
 
     n_correct, n_total = 0, 0
     for task, row in data.items():
-        n = row.get("sample_len", LIMIT_PER_TASK)
+        n = row.get("sample_len", limit_per_task)
         n_correct += row["acc,none"] * n
         n_total += n
 
@@ -52,6 +52,7 @@ def run(model_path: Path, out_dir: Path) -> dict:
         "accuracy": n_correct / n_total,
         "n_questions": n_total,
         "n_tasks": len(TASKS),
+        "limit_per_task": limit_per_task,
         "wall_seconds": wall,
     }
     logger.info(f"MMLU subset accuracy: {stats['accuracy']:.3f} ({n_total} questions, {wall:.0f}s)")
@@ -63,7 +64,16 @@ if __name__ == "__main__":
     parser.add_argument("--model", required=True, help="path to an MLX model directory")
     parser.add_argument("--label", required=True, help="checkpoint label, e.g. mlx-q4")
     parser.add_argument("--out-dir", default="../results/mmlu_raw")
+    # lm_eval's --limit is a positional slice with no shuffling, so a larger limit keeps
+    # the existing questions and appends more: 20-per-task is a strict superset of
+    # 5-per-task, and the 50-question result stays recoverable from the 200-question run.
+    parser.add_argument("--limit-per-task", type=int, default=LIMIT_PER_TASK,
+                        help=f"questions per task ({len(TASKS)} tasks); default {LIMIT_PER_TASK} = 50 questions")
+    # A distinct key so a larger run cannot overwrite the 50-question numbers the rest
+    # of the table is still quoted against.
+    parser.add_argument("--metric-key", default="mmlu", help="results.json metric key, e.g. mmlu_200")
     args = parser.parse_args()
 
-    stats = run(Path(args.model), Path(args.out_dir) / args.label)
-    update(args.label, "mmlu", stats)
+    out = Path(args.out_dir) / (args.label if args.metric_key == "mmlu" else f"{args.label}-{args.metric_key}")
+    stats = run(Path(args.model), out, args.limit_per_task)
+    update(args.label, args.metric_key, stats)

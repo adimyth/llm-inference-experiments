@@ -2,9 +2,18 @@
 
 Layer-wise quantization with Hessian-based error correction.
 
-> **Status: not yet run.** The scripts here are complete and the environment
-> is reproducible via `../setup_cuda.sh`, but no GPTQ numbers are in
-> `../results/results.json` yet. This needs an NVIDIA GPU.
+> **Status: measured.** Run on a rented NVIDIA L40S (48GB), driver 595.91.07,
+> CUDA 13.2, with the exact package set pinned in `../requirements-cuda.lock`.
+>
+> | | |
+> | --- | --- |
+> | Perplexity | **7.959** (+8.1% vs the fp16 control's 7.3649) |
+> | MMLU, 50q / 200q | 76.0% / 75.0% |
+> | Size on disk | 5.33 GB |
+> | Quantization time | 13m 10s |
+>
+> The applied config is captured in `../results/checkpoint_configs/gptq-q4/`, read
+> back out of the checkpoint itself rather than from the docs.
 
 ## How it works
 

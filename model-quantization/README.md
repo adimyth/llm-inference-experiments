@@ -6,6 +6,8 @@ Essay: [LLM Inference: Post-Training Quantization](https://adimyth.in/essays/llm
 
 **Model**: `meta-llama/Llama-3.1-8B-Instruct`. Not the original 3.0 release, which is a separately gated repo on the same account; 3.1 was already approved.
 
+**What this measures.** Each method is characterised on its own terms: what it does, what it costs against its own baseline. Cross-method rankings appear only where the setup controls the confound, because group size, library and measuring tool otherwise vary together. See the band caveat under Results.
+
 **Hardware, and why there are two sets.** Five methods run on a MacBook Pro, Apple M4 Pro, 48GB, with llama.cpp built via arm64 Homebrew with Metal. AWQ and GPTQ have no Metal or MPS path at all and need an NVIDIA GPU. Size, perplexity and MMLU are hardware-independent and compare directly across the two. **Tokens/sec does not.** A CUDA checkpoint's speed is only meaningful against an fp16 control run on that same GPU, which is why `plot.py` keeps `awq-q4` and `gptq-q4` out of the generation-speed chart entirely.
 
 ---
@@ -28,8 +30,8 @@ rtn/        round-to-nearest, llama.cpp Q4_0
 kquants/    llama.cpp Q4_K_M, Q5_K_M, Q8_0
 mlx/        Apple MLX, 4-bit
 hqq/        Half-Quadratic Quantization, 4-bit
-awq/        Activation-aware Weight Quantization, 4-bit  (CUDA, not yet run)
-gptq/       GPTQ, 4-bit                                   (CUDA, not yet run)
+awq/        Activation-aware Weight Quantization, 4-bit  (CUDA)
+gptq/       GPTQ, 4-bit                                   (CUDA)
 ```
 
 Every method folder has the same four files, plus a README explaining the method: `quantize.py`, `perplexity.py`, `mmlu.py`, `throughput.py`. (`fp16/` has `convert.py` instead of `quantize.py`, and a second `perplexity_torch.py`.)
@@ -105,6 +107,8 @@ Run the fp16 control on the GPU **first**, so the AWQ and GPTQ speed numbers hav
 
 Llama 3.1 8B Instruct. Wikitext-2 test split in full, 512-token windows, second half of each scored. MMLU on a fixed 50-question subset, identical questions for every checkpoint.
 
+**Measured on the M4 Pro** (llama.cpp for GGUF, MLX and PyTorch/MPS for the rest):
+
 | Metric | fp16 | RTN `Q4_0` | `Q4_K_M` | `Q5_K_M` | `Q8_0` | MLX 4-bit | HQQ 4-bit |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Size on disk | 14.97 GB | 4.34 GB | 4.58 GB | 5.34 GB | 7.95 GB | 4.22 GB | 5.61 GB |
@@ -113,17 +117,36 @@ Llama 3.1 8B Instruct. Wikitext-2 test split in full, 512-token windows, second 
 | Perplexity | 7.395 † | 7.804 (+5.5%) | 7.622 (+3.1%) | 7.467 (+1.0%) | 7.399 (+0.0%) | 7.949 (+7.9%) | 7.815 (+6.1%) |
 | MMLU, 50q | 82.0% | 76.0% | 78.0% | 80.0% | 80.0% | 76.0% | 76.0% |
 
+**Measured on a rented L40S** (no Metal or MPS path exists for either). Perplexity and MMLU are hardware-independent and compare directly against the table above; **tokens/sec does not** and is quoted only against the fp16 control run on the same card:
+
+| Metric | fp16 (CUDA control) | AWQ 4-bit | GPTQ 4-bit |
+| --- | --- | --- | --- |
+| Size on disk | 14.97 GB | 5.35 GB | 5.33 GB |
+| Generation (tg128) | 38.1 t/s | 33.4 t/s (0.88x) | 32.9 t/s (0.86x) |
+| Prompt processing (pp512) | 9191.2 t/s | 9172.0 t/s | 9194.5 t/s |
+| Perplexity | 7.3649 | 7.792 (+5.8%) | 7.959 (+8.1%) |
+| MMLU, 50q | 82.0% | 78.0% | 76.0% |
+| MMLU, 200q | 76.5% | 77.0% | 75.0% |
+| Quantization time | n/a | 14m 22s | 13m 10s |
+| Scheme | n/a | `W4A16_ASYM`, group 128 | `W4A16`, group 128 |
+
+Both quantized checkpoints generate **slower** than fp16 on this GPU. `compressed-tensors` under plain `transformers` unpacks to fp16 and runs an ordinary fp16 matmul, so there is no arithmetic saving and the unpacking is overhead, on hardware whose bandwidth was never the constraint. Same class of result as HQQ's 0.6 t/s: a property of the backend, not the checkpoint.
+
 \* Backend artifact, not the checkpoint. See `hqq/README.md`. Excluded from `throughput_*.png` for the same reason.
 
 † Two implementations: `llama-perplexity` gives 7.3950, the PyTorch loop gives 7.3648, a 0.4% gap. RTN and the k-quants are quoted against the former, MLX and HQQ against the latter, each against the implementation it shares. See `fp16/README.md`.
 
-AWQ and GPTQ rows are pending a GPU run.
+**The 50-question MMLU numbers do not survive a larger sample.** Rescoring four checkpoints at 200 questions (`mmlu_200` in results.json) reversed the ordering: fp16 82.0% -> 76.5%, MLX 76.0% -> 77.5%, AWQ 78.0% -> 77.0%, GPTQ 76.0% -> 75.0%. Two quantized checkpoints finish above fp16, and MLX, which has the worst perplexity here, has the best 200-question accuracy. At 50 questions the 95% interval is about ±11 points. Treat every MMLU figure as a check that nothing is catastrophically broken, never as a ranking.
 
-**What the table says.** More bits, less error, in exactly that order, with no exceptions: `Q8_0` +0.0%, `Q5_K_M` +1.0%, `Q4_K_M` +3.1%, then the three 4-bit methods clustered inside 2.4 points of each other at RTN +5.5%, HQQ +6.1%, MLX +7.9%.
+**What the table says.** Inside the k-quant family, where one tool quantizes one file and scores it against one baseline, more bits means less error with no exceptions: `Q8_0` +0.0%, `Q5_K_M` +1.0%, `Q4_K_M` +3.1%. The three 4-bit methods then land in a band from +5.5% to +7.9%, at RTN +5.5%, HQQ +6.1%, MLX +7.9%.
 
-`Q4_K_M` is the standout: nearly the same size as RTN's `Q4_0` for almost half the perplexity cost and an extra MMLU question. Same bit budget, spent more carefully.
+**Read that band as a band, not a ranking.** Group size varies across the three (32, 64, 64), the libraries differ, and RTN is quoted against llama.cpp's 7.3950 while MLX and HQQ are quoted against the PyTorch loop's 7.3648. Those vary together, so position inside the band is not attributable to the rounding algorithm. The 0.6 points between RTN and HQQ is smaller than the 0.4% gap between the two fp16 baselines.
 
-The three 4-bit methods all tie or nearly tie on MMLU at 76.0%. With their perplexities within 2.4 points of each other, that is the expected result on 50 questions, not a signal that the two metrics disagree.
+`Q4_K_M` against `Q4_0` is a clean comparison, since the same tool quantized the same f16 file and scored both the same way: nearly the same size, 4.58GB against 4.34GB, for almost half the perplexity cost. Same bit budget, spent more carefully. It also answers one more MMLU question, which on 50 questions is noise, not a result.
+
+The one properly controlled cross-method pair is **MLX against HQQ**: same 4 bits, same group size 64, same scoring loop, same baseline, and still 1.8 points apart. That gap is attributable to the method.
+
+The three 4-bit methods all tie or nearly tie on MMLU at 76.0%. On a fixed 50-question subset the 95% interval on any accuracy here is roughly ±11 points, so a two-point gap is one question. Treat differences under about three questions as noise. That the three tie is the expected result, not a signal that the two metrics disagree.
 
 ---
 
@@ -179,8 +202,8 @@ Everything lands in `models/` and `data/`, both gitignored: too large to commit 
 | `llama-3.1-8b-instruct-q8_0.gguf` | `kquants/quantize.py` | 7.95 GB |
 | `llama-3.1-8b-instruct-mlx-q4/` | `mlx/quantize.py` | 4.22 GB |
 | `llama-3.1-8b-instruct-hqq-q4/` | `hqq/quantize.py` | 5.61 GB |
-| `llama-3.1-8b-instruct-awq-q4/` | `awq/quantize.py` | pending |
-| `llama-3.1-8b-instruct-gptq-q4/` | `gptq/quantize.py` | pending |
+| `llama-3.1-8b-instruct-awq-q4/` | `awq/quantize.py` | 5.35 GB (built on the rented GPU) |
+| `llama-3.1-8b-instruct-gptq-q4/` | `gptq/quantize.py` | 5.33 GB (built on the rented GPU) |
 
 `data/wikitext-2-raw-test.txt` comes from `fetch_wikitext.py` and is shared by every perplexity script regardless of format.
 

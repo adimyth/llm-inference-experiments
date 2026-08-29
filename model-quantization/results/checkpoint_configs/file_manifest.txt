@@ -1,0 +1,24 @@
+## llama-3.1-8b-instruct-awq-q4
+ 
+4096 .
+4096 ..
+4614 chat_template.jinja
+1847 config.json
+184 generation_config.json
+5727970080 model.safetensors
+861 recipe.yaml
+17210019 tokenizer.json
+325 tokenizer_config.json
+
+## llama-3.1-8b-instruct-gptq-q4
+ 
+4096 .
+4096 ..
+4614 chat_template.jinja
+1842 config.json
+184 generation_config.json
+5700679568 model.safetensors
+302 recipe.yaml
+17209920 tokenizer.json
+325 tokenizer_config.json
+
