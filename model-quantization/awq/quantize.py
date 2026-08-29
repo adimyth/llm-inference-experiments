@@ -19,7 +19,7 @@ from pathlib import Path
 
 from datasets import load_dataset
 from llmcompressor import oneshot
-from llmcompressor.modifiers.awq import AWQModifier
+from llmcompressor.modifiers.transform.awq import AWQModifier
 from llmcompressor.modifiers.quantization import QuantizationModifier
 from loguru import logger
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -63,7 +63,9 @@ def build_calibration_set(tokenizer, n_samples: int, max_seq_len: int):
 
 
 def recipe():
-    # AWQModifier computes and applies the per-channel scales; the QuantizationModifier alongside it does the actual rounding. W4A16_ASYM (asymmetric, with a zero-point) is AWQ's documented scheme.
+    # AWQModifier computes and applies the per-channel scales; the QuantizationModifier alongside it does the actual rounding. W4A16_ASYM (asymmetric, with a zero-point) is AWQ's documented scheme, and its preset carries group_size 128, which is where GROUP_SIZE above comes from rather than being passed in.
+    #
+    # The import above must be `llmcompressor.modifiers.transform.awq`, NOT `llmcompressor.modifiers.awq`. On llmcompressor 0.13 the latter is a backwards-compatibility *function*, not the class: calling it returns a two-element list, so `[AWQModifier(), QuantizationModifier(...)]` silently becomes a nested list carrying a second QuantizationModifier with no scheme and an empty ignore list, which drops the lm_head exclusion.
     return [
         AWQModifier(),
         QuantizationModifier(scheme="W4A16_ASYM", targets=["Linear"], ignore=["lm_head"]),
@@ -79,7 +81,8 @@ def quantize(hf_dir: str, out_dir: Path, n_samples: int, max_seq_len: int) -> No
     ds = build_calibration_set(tokenizer, n_samples, max_seq_len)
 
     logger.info(f"quantizing with {METHOD.upper()}, 4-bit, group size {GROUP_SIZE}")
-    oneshot(
+    # oneshot returns the calibrated model (`return one_shot.model`). Bind it rather than relying on the passed-in object having been mutated in place, so a future change there can't have us silently saving unquantized weights.
+    model = oneshot(
         model=model,
         dataset=ds,
         recipe=recipe(),

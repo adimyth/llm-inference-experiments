@@ -77,7 +77,8 @@ def quantize(hf_dir: str, out_dir: Path, n_samples: int, max_seq_len: int) -> No
     ds = build_calibration_set(tokenizer, n_samples, max_seq_len)
 
     logger.info(f"quantizing with {METHOD.upper()}, 4-bit, group size {GROUP_SIZE}")
-    oneshot(
+    # oneshot returns the calibrated model (`return one_shot.model`). Bind it rather than relying on the passed-in object having been mutated in place, so a future change there can't have us silently saving unquantized weights.
+    model = oneshot(
         model=model,
         dataset=ds,
         recipe=recipe(),

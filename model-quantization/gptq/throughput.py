@@ -27,7 +27,7 @@ from results_io import update
 def run(model_id: str, tokenizer_id: str, device: str, n_prompt: int, n_gen: int, repeats: int, dtype: str) -> dict:
     logger.info(f"loading {model_id} on {torch_device.describe(device)}")
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_id)
-    # Loaded onto CPU and then moved, rather than device_map=device: accelerate's dispatch path is pathologically slow for an 8B model on MPS (ten minutes and still loading), and a single-GPU 8B model needs no sharding anyway. Same pattern the HQQ scripts use.
+    # Placement and dtype differ by backend; torch_device.load_causal_lm owns that branch so all six benchmark scripts load a checkpoint the same way.
     model = torch_device.load_causal_lm(model_id, device, dtype)
     model.eval()
 
