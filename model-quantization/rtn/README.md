@@ -35,7 +35,7 @@ llama.cpp's `Q4_0` quant type. Quantizing the full 8B model takes about 9 second
 | Perplexity, wikitext-2 | 7.395 | 7.804 (+5.5%) |
 | MMLU, 50q subset | 82.0% (41/50) | 76.0% (38/50) |
 
-71% smaller, 3.1x faster to decode, +5.5% perplexity. The MMLU drop is larger than perplexity suggests: 6 points, 3 of 50 questions flipping.
+71% smaller, 3.1x faster to decode, +5.5% perplexity. MMLU drops 6 points, but that is 3 questions out of 50, inside the noise on a subset this size. The 95% interval on any accuracy here is roughly ±11 points, so treat the MMLU row as a check that nothing is catastrophically broken rather than as a measurement of the cost. See the MMLU caveat in `../README.md`.
 
 ## Running it
 

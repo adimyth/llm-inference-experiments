@@ -23,6 +23,8 @@ AWQ does. It pushes calibration text through the model and measures the average 
 
 The rounding itself stays ordinary. What changes is where the grid's precision gets spent. **AWQ decides what to protect before it rounds anything**, which is the clean contrast with `../gptq/`, which rounds greedily and repairs afterwards.
 
+AWQ came out ahead of both `../hqq/` and `../gptq/` here, and that ordering has outside support: HQQ's authors published a Llama-2-7B benchmark at group size 64 with the same order and gaps of about the same size, HQQ trailing AWQ by 0.38% against 0.30% here and GPTQ by 1.89% against 2.14% here. Different model, different tooling, same result. It is the only cross-method ordering in this project that an independent measurement corroborates.
+
 ## Configuration
 
 | | |
@@ -42,6 +44,21 @@ Read back out of the produced checkpoint, not from the docs. The raw files are i
 Group size 128 is the default every shipped AWQ checkpoint uses, not the 64 that `../mlx/` and `../hqq/` use. "4-bit" alone doesn't specify a scheme, and group size is the parameter most model cards leave out.
 
 `../gptq/quantize.py` builds the identical calibration set with the same seed, so AWQ and GPTQ differ by algorithm and not by the data they saw.
+
+## What the run depends on, and how to change it
+
+The three values above that a calibrated method's result actually hangs on are flags, and each one is written into `results.json` so a checkpoint describes its own run:
+
+| Flag | Default | What it changes |
+| --- | --- | --- |
+| `--seed` | `42` | Which calibration samples get drawn. Two seeds with everything else fixed give the run-to-run noise floor. Nothing else measured by changing one variable means anything until that floor is known. |
+| `--scheme` | `W4A16_ASYM` | Symmetric or asymmetric weights. The asymmetric schemes carry a zero-point per group. |
+| `--calibration` | `ultrachat` | `ultrachat` (chat transcripts) or `c4` (web text). |
+
+`--num-samples` and `--max-seq-len` are flags too, though the literature suggests neither is where the sensitivity lives. The GPTQ paper used 128 sequences of 2048 tokens and ran no ablation on the count; the AWQ paper swept 8 to 256 and found AWQ saturated at 16, roughly ten times fewer than GPTQ needed, because it only estimates an average activation scale instead of fitting a regression. The 256 used here is comfortably past both.
+
+**Calibration domain is the one that matters.** AWQ's Figure 8(b) calibrates on one corpus and evaluates on another: AWQ loses 0.5 to 0.6 perplexity, GPTQ loses 2.3 to 4.9. These runs calibrated on chat text and scored on wikitext, so that mismatch is present and is not quantified here. `--calibration c4` is the closer comparison to both papers, which used C4 and neither the eval set nor chat.
+
 
 ## Tooling
 

@@ -38,7 +38,13 @@ Quantizing the full 8B model takes about 3 minutes.
 
 † See below. Not a property of the checkpoint.
 
-**A better per-group fit and a better end-to-end result are not the same claim.** HQQ reconstructs every individual group more faithfully than RTN does, and still ends up behind it, +6.1% against +5.5%, in a checkpoint 1.3 GB larger. Lower error inside one group doesn't guarantee lower error at the model's output after 32 layers. The margin is small, and 0.6 percentage points on this eval is close to the resolution of the comparison, but it does not go HQQ's way.
+**A better per-group fit and a better end-to-end result are not the same claim.** HQQ reconstructs every individual group more faithfully than RTN does, and the two finish level: 7.815 against 7.804, a tenth of a percent apart in raw perplexity. Lower error inside one group doesn't guarantee lower error at the model's output after 32 layers.
+
+The percentages differ more than the raw numbers do, +6.1% against +5.5%, only because the two are quoted against different fp16 baselines: HQQ against the PyTorch loop's 7.3648, RTN against llama.cpp's 7.3950. That 0.4% baseline gap is larger than the gap between the checkpoints, so this pair does not rank in either direction.
+
+**The 5.61 GB is coverage, not inefficiency.** HQQ's default is `_IGNORE_LINEAR = ['lm_head']`, and embeddings are `nn.Embedding`, which its `nn.Linear` walker never reaches. So `lm_head.weight` and `model.embed_tokens.weight`, 128256 x 4096 each, both stay fp16, which is 1.96 GB of the file. llama.cpp quantizes both (`token_embd` at `Q4_0`, `output` at `Q6_K`). On the 6.98B parameters HQQ does convert it spends 4.50 bits each, exactly what every other 4-bit method here spends. The larger file buys nothing and costs nothing; it is a different set of tensors, not a worse encoding.
+
+**One ordering here has outside support.** HQQ's authors published a Llama-2-7B benchmark at group size 64 putting AWQ ahead of HQQ and both well clear of GPTQ. This project reproduced that order on a different model with different tooling: HQQ trails AWQ by 0.30% here against 0.38% there, and GPTQ trails AWQ by 2.14% here against 1.89% there. HQQ's own comparison does not include RTN, so it never claims to beat it.
 
 ## Why generation speed is 0.6 t/s
 

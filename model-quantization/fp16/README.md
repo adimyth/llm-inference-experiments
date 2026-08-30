@@ -13,18 +13,24 @@ No single tool reads every format in this project, so perplexity is measured two
 | Script | Engine | Used for |
 | --- | --- | --- |
 | `perplexity.py` | `llama-perplexity` (llama.cpp) | fp16, RTN, k-quants (GGUF) |
-| `perplexity_torch.py` | PyTorch + transformers | fp16, AWQ, GPTQ, and siblings for MLX and HQQ |
+| `perplexity_torch.py` | PyTorch + transformers | fp16, HQQ, AWQ, GPTQ |
 
 `mmlu_torch.py` and `throughput_torch.py` sit alongside them for the same reason. `mmlu.py` and `throughput.py` go through llama.cpp and read only GGUF, which is all the Mac needs; the `_torch` copies run the unquantized model on a CUDA box so AWQ and GPTQ have a speed baseline measured on their own hardware.
 
-Running **both** against the same fp16 weights is what proves a GGUF checkpoint's perplexity is comparable to an MLX or AWQ one:
+There is a third: `../mlx/perplexity.py` runs the same convention through MLX's own arrays and loss, because MLX is a separate framework that neither of the other two can read.
 
-| Implementation | Perplexity |
-| --- | --- |
-| `llama-perplexity` | 7.3950 |
-| PyTorch loop | 7.3648 |
+Running **all three** against the same fp16 weights is what proves a GGUF checkpoint's perplexity is comparable to an MLX or AWQ one:
 
-A 0.4% gap, consistent with fp16 kernel differences between llama.cpp's Metal kernels and PyTorch's MPS backend. Nothing else is unexplained.
+| Implementation | Perplexity | Recorded as |
+| --- | --- | --- |
+| `llama-perplexity` (C++, Metal) | 7.3950 | `fp16` |
+| PyTorch loop, MPS | 7.3648 | `fp16-torch` |
+| PyTorch loop, CUDA | 7.3649 | `fp16-cuda` |
+| MLX loop | 7.3642 | `fp16-mlx` |
+
+llama.cpp sits 0.4% off the rest, consistent with fp16 kernel differences between its Metal kernels and PyTorch's MPS backend. MLX agrees with PyTorch to 0.007%. The same PyTorch loop on an M4 Pro and on a rented L40S agrees to 0.001%, so the number belongs to the weights and not the machine. Nothing else is unexplained.
+
+The MLX check came last, and until it ran nothing confirmed the MLX loop was measuring perplexity correctly at all.
 
 That cross-check is not academic. Before it existed the PyTorch loop scored the whole 512-token window while `llama-perplexity` scored only the second half, and mixing the two conventions made MLX and HQQ look about 35% worse than fp16 when their real cost is 6-8%. See `../perplexity_core.py`, which now holds the convention in one place, and the "The perplexity bug" section in `../README.md`.
 

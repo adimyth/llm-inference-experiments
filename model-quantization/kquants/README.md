@@ -32,7 +32,23 @@ Two sub-blocks, shown by their endpoints. A is RTN's example above; B is another
 
 This two-level structure is what llama.cpp calls *k-quants*. The `K` is a family label, not an expansion of anything the original implementation documents.
 
-**`_M` is a separate decision: which tensors get more bits.** `Q4_K_M` quantizes most of the model with the scheme above but bumps two tensors, the attention output projection and the FFN "down" projection, to 6-bit (`Q6_K`) for roughly half the layers, mostly nearest the start and end of the network. The rule is fixed in [llama.cpp's quantization source](https://github.com/ggml-org/llama.cpp/blob/master/src/llama-quant.cpp), not computed per model. `Q5_K_M` follows the same idea from a 5-bit base.
+**`_M` is a separate decision: which tensors get more bits.** `Q4_K_M` quantizes most of the model with the scheme above but bumps some tensors to 6-bit (`Q6_K`): the attention **value** projection and the FFN **down** projection on a fixed subset of layers, plus the model's final vocabulary projection (`output.weight`). The rule is arithmetic, fixed in [llama.cpp's quantization source](https://github.com/ggml-org/llama.cpp/blob/master/src/llama-quant.cpp), not computed per model:
+
+```cpp
+   i_layer <  n_layers/8              // the first eighth of the layers
+|| i_layer >= n_layers*7/8            // the last eighth
+|| (i_layer - n_layers/8) % 3 == 2    // every third one in between
+```
+
+For Llama 3.1 8B's 32 layers that selects 16 of them:
+
+```
+0  1  2  3  6  9  12  15  18  21  24  27  28  29  30  31
+```
+
+Reading the produced file back confirms 33 tensors at `Q6_K`: `attn_v.weight` and `ffn_down.weight` on those 16 layers, and `output.weight` once. Everything else quantized is `Q4_K`. `Q5_K_M` follows the same idea from a 5-bit base.
+
+Those upgrades are the whole reason `Q4_K_M` is larger than a plain 4-bit checkpoint. `Q4_K` itself works out to 4.5 bits per weight, the same as `../mlx/`; the `_M` upgrades lift the file's average to 4.89.
 
 ## Results
 
@@ -44,7 +60,7 @@ This two-level structure is what llama.cpp calls *k-quants*. The `K` is a family
 | Perplexity, wikitext-2 | 7.395 | 7.622 (+3.1%) | 7.467 (+1.0%) | 7.399 (+0.05%) |
 | MMLU, 50q subset | 82.0% (41/50) | 78.0% (39/50) | 80.0% (40/50) | 80.0% (40/50) |
 
-`Q4_K_M` costs nearly the same as RTN's `Q4_0` (4.58 GB against 4.34 GB) and buys back almost half the perplexity gap plus an extra MMLU question. Same bits, smarter arithmetic. `Q8_0` at 7.399 against fp16's 7.395 is close enough to call unquantized.
+`Q4_K_M` costs nearly the same as RTN's `Q4_0` (4.58 GB against 4.34 GB) and buys back almost half the perplexity gap. Same tool, same source file, same scoring, so that one is a clean comparison. It also answers one more MMLU question, which on 50 questions is noise rather than a result. `Q8_0` at 7.399 against fp16's 7.395 is close enough to call unquantized.
 
 ## Running it
 

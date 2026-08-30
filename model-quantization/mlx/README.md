@@ -11,9 +11,11 @@ MLX's default group is 64 weights, twice k-quants' 32. For a group whose largest
 | MLX group | -1.20 | 0.14 | -1.20 | 0 | -1.20 |
 | MLX group | 0.90 | 0.14 | -1.20 | 15 | 0.90 |
 
-The difference shows up when the group isn't uniform. k-quants would give a *second* group of 32, a quiet one, its own much smaller scale. MLX's 64-weight group can't split that finely: one scale covers twice as many weights, so a group straddling a loud region and a quiet one has to compromise between them.
+The difference shows up when the group isn't uniform. k-quants would give a *second* group of 32, a quiet one, its own much smaller scale. MLX's 64-weight group can't split that finely: one scale covers twice as many weights, so a group straddling a loud region and a quiet one has to compromise between them. The scale ends up set by the group's extremes, so the quiet weights come back on a grid too coarse for them and lose a bigger fraction of themselves, the same failure `../rtn/` shows when `-0.05` dequantizes to `0.00`. A 64-weight group is twice as likely to contain both kinds of weight as a 32-weight one.
 
-MLX also stores its scale and offset at full precision per group rather than compressing them to 6 bits. Its per-group bookkeeping costs *more* than k-quants', not less. **The gap below isn't about how MLX stores its scale. It's the group size.**
+MLX stores its scale and offset uncompressed per group where k-quants squeeze theirs to 6 bits, which is more per group, but MLX's groups are twice as large and the two cancel exactly. Both spend 0.5 bits per weight on metadata and land at 4.5 bits per weight. `Q4_K_M` only looks heavier on disk, 4.58 GB against 4.22 GB, because its `_M` upgrades lift its average to 4.89 bits per weight.
+
+**Group size is part of why MLX costs more here, though not all of it.** `../hqq/` uses the same 64-weight groups and lands nearly two points better, so how the scale is placed inside a group matters at least as much as how wide the group is.
 
 ## Results
 
@@ -27,7 +29,9 @@ MLX also stores its scale and offset at full precision per group rather than com
 
 \* MLX's perplexity is quoted against the **PyTorch-loop** fp16 baseline (7.3648), not llama.cpp's 7.3950, since that's the implementation it shares. The two agree to 0.4%, so the deltas are comparable. See `../fp16/README.md`.
 
-MLX is slightly smaller than RTN and slightly faster to generate with, and costs somewhat more perplexity, +7.9% against +5.5%, for a checkpoint also called "4-bit". **"4-bit" alone doesn't specify a quantization scheme.** Group size is a second parameter, and most model cards leave it out.
+MLX is slightly smaller than RTN and slightly faster to generate with, and costs somewhat more perplexity, +7.9% against +5.5%, for a checkpoint also called "4-bit". Those two are measured by different tools against different fp16 baselines, so read the pair as a band rather than a ranking. **"4-bit" alone doesn't specify a quantization scheme.** Group size is a second parameter, and most model cards leave it out.
+
+Worth knowing before reading MLX's perplexity as a weakness: on the 200-question MMLU rescore MLX is the **best** of the four checkpoints tested, at 77.5% against fp16's 76.5%. See the MMLU caveat in `../README.md`.
 
 MMLU doesn't move: identical to RTN at 76.0%, the same 38 of 50. With three 4-bit methods inside 2.4 perplexity points of each other, a tie on a 50-question subset is the expected outcome.
 
