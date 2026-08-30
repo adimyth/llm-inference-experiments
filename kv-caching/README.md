@@ -86,16 +86,16 @@ Llama 3.1 8B, fp16, one forward pass on the L40S:
 
 | seq_len | ms/forward | vs len-1 | tokens/ms |
 | --- | --- | --- | --- |
-| 1 | 25.46 | 1.00x | 0.0 |
-| 64 | 29.46 | 1.16x | 2.2 |
-| 320 | 42.01 | 1.65x | 7.6 |
-| 512 | 49.13 | 1.93x | 10.4 |
-| 1024 | 90.32 | 3.55x | 11.3 |
-| 2048 | 176.51 | 6.93x | 11.6 |
-| 4096 | 375.98 | 14.77x | 10.9 |
-| 8192 | 850.23 | 33.40x | 9.6 |
+| 1 | 25.06 | 1.00x | 0.0 |
+| 64 | 29.41 | 1.17x | 2.2 |
+| 320 | 41.96 | 1.67x | 7.6 |
+| 512 | 49.11 | 1.96x | 10.4 |
+| 1024 | 90.32 | 3.60x | 11.3 |
+| 2048 | 177.16 | 7.07x | 11.6 |
+| 4096 | 378.46 | 15.10x | 10.8 |
+| 8192 | 852.67 | 34.03x | 9.6 |
 
-The 1.65x at 320 tokens, which is the average sequence length in the 512-token timing cell, is the 1.8x measured there.
+The 1.67x at 320 tokens, which is the average sequence length in the 512-token timing cell, is the 1.8x measured there.
 
 **That `vs len-1` column is a ceiling, not the speedup.** The cached path pays `cost(1)` every step, but the uncached path pays `cost(L)` averaged over every length from the prompt to the end, not the cost at the final length.
 
@@ -115,7 +115,7 @@ Every row is measured, median of 3, Llama 3.1 8B fp16 on the L40S at batch 1 wit
 
 Generation beyond 2048 tokens was not measured.
 
-A single-token forward costs 25.46 ms and moves 0.04 tokens per millisecond. The card is idle; that time is fixed cost, most of it `transformers` Python dispatch rather than CUDA launch overhead, since 150-odd kernels cannot account for GPT-2's 6.4 ms. Until the sequence is long enough for arithmetic to exceed that fixed cost, both paths pay roughly the same and the ratio sits near 1.
+A single-token forward costs 25.06 ms and moves 0.04 tokens per millisecond. The card is idle; that time is fixed cost, most of it `transformers` Python dispatch rather than CUDA launch overhead, since 150-odd kernels cannot account for GPT-2's 6.4 ms. Until the sequence is long enough for arithmetic to exceed that fixed cost, both paths pay roughly the same and the ratio sits near 1.
 
 **The defect is the sequence lengths, inherited from the CPU experiment without asking whether they still suited a GPU.** They do not. A CPU has no comparable fixed-cost cushion, so at 512 tokens it was already in the compute-bound region while the GPU was nowhere near it. The two tables were never measured at comparable points on the same curve.
 
