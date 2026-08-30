@@ -71,7 +71,9 @@ The three values above that a calibrated method's result actually hangs on are f
 **Calibration domain is the one that matters.** AWQ's Figure 8(b) calibrates on one corpus and evaluates on another: AWQ loses 0.5 to 0.6 perplexity, GPTQ loses 2.3 to 4.9. These runs calibrated on chat text and scored on wikitext, so that mismatch is present and is not quantified here. `--calibration c4` is the closer comparison to both papers, which used C4 and neither the eval set nor chat.
 
 
-Measured, GPTQ quantized *faster* than AWQ on the same box, 13m 10s against 14m 22s, despite the per-column Hessian solve sounding heavier. It also ran at about 18% GPU utilisation against AWQ's 100%, because the solve is serial work that cannot fill the device.
+Measured, GPTQ quantized *faster* than AWQ on the same box, 13m 10s against 14m 22s, despite the per-column Hessian solve sounding heavier.
+
+**On GPU utilisation.** An earlier version of this README said GPTQ ran at about 18% against AWQ's 100%. That came from glances at `nvidia-smi` and does not survive sampling. Polling every two seconds across two complete quantize windows, 733 samples in [`../results/gpu_utilisation_l40s.log`](../results/gpu_utilisation_l40s.log), gives a **mean of 39.7%**, with 5% of samples at 0% and 21% at 90% or above, peaking at 99%. The work is bursty rather than steadily low: it alternates between the calibration and propagation passes, which fill the device, and the serial per-column solve, which cannot. A single reading can land anywhere in that range. No equivalent sampling exists for the AWQ run, so the comparison against it is withdrawn rather than restated.
 
 ## Tooling
 

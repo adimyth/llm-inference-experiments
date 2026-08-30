@@ -1,0 +1,233 @@
+==> GPU
+name, memory.total [MiB], driver_version
+NVIDIA L40S, 46068 MiB, 595.91.07
+==> uv
+downloading uv 0.12.7 x86_64-unknown-linux-gnu
+installing to /home/ubuntu/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+==> venv
+Downloading cpython-3.12.14-linux-x86_64-gnu (download) (32.5MiB)
+ Downloaded cpython-3.12.14-linux-x86_64-gnu (download)
+Using CPython 3.12.14
+Creating virtual environment at: .venv-cuda
+Activate with: source .venv-cuda/bin/activate
+==> dependencies
+installing from requirements-cuda.lock
+Using Python 3.12.14 environment at: .venv-cuda
+Resolved 113 packages in 1.31s
+Downloading pyarrow (47.8MiB)
+Downloading sympy (6.0MiB)
+Downloading hf-xet (4.3MiB)
+Downloading tokenizers (3.1MiB)
+Downloading networkx (2.0MiB)
+Downloading pydantic-core (2.0MiB)
+Downloading aiohttp (1.7MiB)
+Downloading pygments (1.2MiB)
+Downloading nvidia-cufile (1.2MiB)
+Downloading nvidia-cuda-cupti (10.2MiB)
+Downloading nltk (1.7MiB)
+Downloading nvidia-nvjitlink (38.9MiB)
+Downloading nvidia-cuda-nvrtc (86.0MiB)
+Downloading auto-round (1.1MiB)
+Downloading numpy (15.9MiB)
+Downloading nvidia-cuda-runtime (2.1MiB)
+Downloading triton (188.6MiB)
+Downloading cuda-bindings (6.3MiB)
+Downloading lxml (5.0MiB)
+Downloading pandas (10.5MiB)
+Downloading nvidia-cusparselt-cu13 (162.3MiB)
+Downloading nvidia-nccl-cu13 (196.4MiB)
+Downloading nvidia-cufft (204.2MiB)
+Downloading scikit-learn (8.7MiB)
+Downloading nvidia-cublas (403.5MiB)
+Downloading transformers (11.1MiB)
+Downloading nvidia-cudnn-cu13 (349.2MiB)
+Downloading nvidia-nvshmem-cu13 (57.6MiB)
+Downloading pillow (6.6MiB)
+Downloading nvidia-cusparse (139.2MiB)
+Downloading nvidia-cusolver (191.6MiB)
+Downloading torch (502.2MiB)
+Downloading lm-eval (8.5MiB)
+Downloading nvidia-curand (56.8MiB)
+Downloading scipy (33.7MiB)
+ Downloaded nvidia-cufile
+   Building sqlitedict==2.1.0
+   Building rouge-score==0.1.2
+   Building word2number==1.1
+ Downloaded aiohttp
+ Downloaded pydantic-core
+ Downloaded pygments
+ Downloaded auto-round
+ Downloaded nvidia-cuda-runtime
+      Built sqlitedict==2.1.0
+      Built rouge-score==0.1.2
+      Built word2number==1.1
+ Downloaded nltk
+ Downloaded tokenizers
+ Downloaded networkx
+ Downloaded hf-xet
+ Downloaded lxml
+ Downloaded cuda-bindings
+ Downloaded pillow
+ Downloaded sympy
+ Downloaded scikit-learn
+ Downloaded nvidia-cuda-cupti
+ Downloaded pandas
+ Downloaded transformers
+ Downloaded numpy
+ Downloaded scipy
+ Downloaded nvidia-nvjitlink
+ Downloaded pyarrow
+ Downloaded nvidia-curand
+ Downloaded nvidia-nvshmem-cu13
+ Downloaded nvidia-cuda-nvrtc
+ Downloaded nvidia-cusparse
+ Downloaded nvidia-cusparselt-cu13
+ Downloaded triton
+ Downloaded nvidia-cusolver
+ Downloaded nvidia-nccl-cu13
+ Downloaded nvidia-cufft
+ Downloaded nvidia-cudnn-cu13
+ Downloaded nvidia-cublas
+ Downloaded torch
+ Downloaded lm-eval
+Prepared 112 packages in 15.57s
+Installed 113 packages in 742ms
+ + absl-py==2.5.0
+ + accelerate==1.14.0
+ + aiohappyeyeballs==2.7.1
+ + aiohttp==3.14.3
+ + aiosignal==1.4.0
+ + annotated-doc==0.0.5
+ + annotated-types==0.8.0
+ + anyio==4.14.2
+ + attrs==26.1.0
+ + auto-round==0.14.2
+ + certifi==2026.7.22
+ + chardet==6.0.0.post1
+ + charset-normalizer==3.5.1
+ + click==8.5.0
+ + colorama==0.4.6
+ + compressed-tensors==0.18.0
+ + cuda-bindings==13.3.1
+ + cuda-pathfinder==1.8.0
+ + cuda-toolkit==13.0.3.0
+ + dataproperty==1.1.1
+ + datasets==5.0.1
+ + defusedxml==0.7.1
+ + dill==0.4.1
+ + evaluate==0.4.6
+ + filelock==3.32.4
+ + frozenlist==1.8.0
+ + fsspec==2026.6.0
+ + h11==0.16.0
+ + hf-xet==1.6.0
+ + httpcore==1.0.9
+ + httpx==0.28.1
+ + huggingface-hub==1.29.0
+ + idna==3.19
+ + jinja2==3.1.6
+ + joblib==1.5.3
+ + llmcompressor==0.13.0
+ + lm-eval==0.4.12
+ + loguru==0.7.3
+ + lxml==6.1.2
+ + markdown-it-py==4.2.0
+ + markupsafe==3.0.3
+ + mbstrdecoder==1.1.5
+ + mdurl==0.1.2
+ + more-itertools==11.1.0
+ + mpmath==1.3.0
+ + multidict==6.7.1
+ + multiprocess==0.70.19
+ + narwhals==2.25.0
+ + networkx==3.6.1
+ + nltk==3.10.3
+ + numpy==2.4.6
+ + nvidia-cublas==13.1.1.3
+ + nvidia-cuda-cupti==13.0.85
+ + nvidia-cuda-nvrtc==13.0.88
+ + nvidia-cuda-runtime==13.0.96
+ + nvidia-cudnn-cu13==9.20.0.48
+ + nvidia-cufft==12.0.0.61
+ + nvidia-cufile==1.15.1.6
+ + nvidia-curand==10.4.0.35
+ + nvidia-cusolver==12.0.4.66
+ + nvidia-cusparse==12.6.3.3
+ + nvidia-cusparselt-cu13==0.8.1
+ + nvidia-ml-py==13.610.43
+ + nvidia-nccl-cu13==2.29.7
+ + nvidia-nvjitlink==13.3.33
+ + nvidia-nvshmem-cu13==3.4.5
+ + nvidia-nvtx==13.0.85
+ + packaging==26.3
+ + pandas==3.0.5
+ + pathvalidate==3.3.1
+ + pillow==12.3.0
+ + portalocker==4.3.0
+ + propcache==0.5.2
+ + psutil==7.2.2
+ + py-cpuinfo==9.0.0
+ + pyarrow==25.0.1
+ + pydantic==2.13.5
+ + pydantic-core==2.46.5
+ + pygments==2.21.0
+ + pytablewriter==1.2.1
+ + python-dateutil==2.9.0.post0
+ + pytz==2026.3.post1
+ + pyyaml==6.0.3
+ + regex==2026.7.19
+ + requests==2.34.2
+ + rich==15.0.0
+ + rouge-score==0.1.2
+ + sacrebleu==2.6.0
+ + safetensors==0.8.0
+ + scikit-learn==1.9.0
+ + scipy==1.18.1
+ + setuptools==84.0.0
+ + shellingham==1.5.4
+ + six==1.17.0
+ + sqlitedict==2.1.0
+ + sympy==1.14.0
+ + tabledata==1.3.5
+ + tabulate==0.10.0
+ + tcolorpy==0.1.7
+ + threadpoolctl==3.6.0
+ + tokenizers==0.22.2
+ + torch==2.13.0
+ + tqdm==4.70.0
+ + transformers==5.14.1
+ + triton==3.7.1
+ + typepy==1.3.5
+ + typer==0.27.2
+ + typing-extensions==4.16.0
+ + typing-inspection==0.4.4
+ + urllib3==2.7.0
+ + word2number==1.1
+ + xxhash==4.0.1
+ + yarl==1.24.5
+==> smoke test
+torch 2.13.0+cu130 -> NVIDIA L40S
+llmcompressor 0.13.0
+transformers 5.14.1
+==> key versions
+Using Python 3.12.14 environment at: .venv-cuda
+accelerate==1.14.0
+compressed-tensors==0.18.0
+datasets==5.0.1
+llmcompressor==0.13.0
+lm-eval==0.4.12
+torch==2.13.0
+transformers==5.14.1
+
+Done. Next:
+  source .venv-cuda/bin/activate
+  python fetch_wikitext.py
+  hf download meta-llama/Llama-3.1-8B-Instruct
