@@ -97,17 +97,23 @@ Llama 3.1 8B, fp16, one forward pass on the L40S:
 
 The 1.65x at 320 tokens, which is the average sequence length in the 512-token timing cell, is the 1.8x measured there.
 
-**That `vs len-1` column is a ceiling, not the speedup.** The cached path pays `cost(1)` every step, but the uncached path pays `cost(L)` averaged over every length from the prompt to the end, not the cost at the final length. Integrating over the measured curve instead ([`project_speedup.py`](project_speedup.py)) gives what this experiment would have found at longer generations:
+**That `vs len-1` column is a ceiling, not the speedup.** The cached path pays `cost(1)` every step, but the uncached path pays `cost(L)` averaged over every length from the prompt to the end, not the cost at the final length.
 
-| Generated tokens | Uncached | Cached | Speedup |
+The timing run was extended to 1024 and 2048 generated tokens to measure the transition region directly rather than projecting into it:
+
+| Generated tokens | No cache | Cache | Speedup |
 | --- | --- | --- | --- |
-| 512 (what was run) | 21.19s | 13.04s | 1.6x, measured 1.8x |
-| 1024 | 59.52s | 26.07s | 2.3x |
-| 2048 | 201.63s | 52.14s | 3.9x |
-| 4096 | 780.09s | 104.28s | 7.5x |
-| 8192 | 3321.48s | 208.57s | 15.9x |
+| 32 | 0.98s | 0.77s | 1.3x |
+| 64 | 1.98s | 1.54s | 1.3x |
+| 128 | 4.15s | 3.08s | 1.3x |
+| 256 | 9.06s | 6.17s | 1.5x |
+| 512 | 22.09s | 12.34s | 1.8x |
+| 1024 | 64.38s | 24.79s | 2.6x |
+| 2048 | 222.49s | 49.88s | 4.5x |
 
-Only the 512 row was measured end to end. The rest are projections, and the method is validated on that row to within 6%, predicting 1.63x against a measured 1.79x, so it runs slightly conservative.
+Every row is measured, median of 3, Llama 3.1 8B fp16 on the L40S at batch 1 with a 64-token prompt. The cached column is close to linear in output length, roughly doubling per row, while the uncached column grows faster and faster: 2.0x, 2.1x, 2.2x, 2.4x, 2.9x, 3.5x per doubling. That divergence is the quadratic term becoming visible, and it is why the speedup column climbs.
+
+Generation beyond 2048 tokens was not measured.
 
 A single-token forward costs 25.46 ms and moves 0.04 tokens per millisecond. The card is idle; that time is fixed cost, most of it `transformers` Python dispatch rather than CUDA launch overhead, since 150-odd kernels cannot account for GPT-2's 6.4 ms. Until the sequence is long enough for arithmetic to exceed that fixed cost, both paths pay roughly the same and the ratio sits near 1.
 
