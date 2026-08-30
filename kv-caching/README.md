@@ -74,15 +74,46 @@ Three runs, each changing one variable from the one before it, so the difference
 | dtype | GPT-2 124M | fp16 | L40S | 1.0x | 1.0x | 1.0x | 1.0x | **1.0x** |
 | model size | Llama 3.1 8B | fp16 | L40S | 1.3x | 1.3x | 1.3x | 1.5x | **1.8x** |
 
-**Hardware accounts for essentially all of it.** Holding the model and dtype fixed and moving from CPU to L40S takes the 512-token speedup from 12.8x to 1.1x.
+Moving from CPU to L40S with the model and dtype held fixed takes the 512-token speedup from 12.8x to 1.1x. Dtype changes nothing: fp32 and fp16 on the same card agree to two decimals. Llama 3.1 8B reaches 1.8x where GPT-2 on the same card manages 1.0x.
 
-**Dtype accounts for none of it.** fp32 and fp16 on the same card agree to two decimals, which says these cells are bound by kernel launch latency rather than arithmetic.
+**Read none of that as "caching does not help on GPUs."** The first version of this section said hardware accounted for essentially all of the collapse. That was wrong, and `forward_cost.py` is what showed it.
 
-**Model size gives a little back.** Llama 3.1 8B reaches 1.8x where GPT-2 on the same card manages 1.0x, because a model 65 times larger does enough real work per forward pass to notice the work it is repeating.
+### Why the speedup collapsed: we measured the bottom of the curve
 
-The uncached column shows why. On CPU it climbs 2.3x to 3.4x per doubling, visibly bending toward quadratic. On the L40S it reads 2.0x, 2.0x, 2.05x, 2.13x, which is close to linear. The redundant computation is still happening; the GPU absorbs it inside launch overhead instead of paying for it in wall time.
+Both paths run the same number of forward passes. The cached one passes a single token; the uncached one passes the whole sequence so far. So **the speedup is exactly the ratio between the cost of a full forward and the cost of a one-token forward**, and that ratio is not a property of the hardware. It depends on how long the sequence is.
 
-**What this does not say.** It is not an argument against caching on GPUs. The longest sequence here is 576 tokens, and the quadratic term is what makes a 128K context impossible on any hardware. Single-stream timing also cannot show what recompute does to a batched serving stack, which is where the cost actually lands in production. The narrow claim is the one to keep: **at short sequence lengths on a fast GPU, the wasted compute hides inside launch latency, so a speedup measured on a CPU does not transfer.**
+Llama 3.1 8B, fp16, one forward pass on the L40S:
+
+| seq_len | ms/forward | vs len-1 | tokens/ms |
+| --- | --- | --- | --- |
+| 1 | 25.46 | 1.00x | 0.0 |
+| 64 | 29.46 | 1.16x | 2.2 |
+| 320 | 42.01 | 1.65x | 7.6 |
+| 512 | 49.13 | 1.93x | 10.4 |
+| 1024 | 90.32 | 3.55x | 11.3 |
+| 2048 | 176.51 | 6.93x | 11.6 |
+| 4096 | 375.98 | 14.77x | 10.9 |
+| 8192 | 850.23 | 33.40x | 9.6 |
+
+The 1.65x at 320 tokens, which is the average sequence length in the 512-token timing cell, is the 1.8x measured there. The same arithmetic projects the speedup this experiment *would* have found at realistic lengths:
+
+| Generated tokens | Projected speedup, Llama on L40S |
+| --- | --- |
+| 512 (what was run) | ~1.8x |
+| 2048 | ~7x |
+| 8192 | ~33x |
+
+A single-token forward costs 25.46 ms and moves 0.04 tokens per millisecond. The card is idle; that time is fixed cost, most of it `transformers` Python dispatch rather than CUDA launch overhead, since 150-odd kernels cannot account for GPT-2's 6.4 ms. Until the sequence is long enough for arithmetic to exceed that fixed cost, both paths pay roughly the same and the ratio sits near 1.
+
+**The defect is the sequence lengths, inherited from the CPU experiment without asking whether they still suited a GPU.** They do not. A CPU has no comparable fixed-cost cushion, so at 512 tokens it was already in the compute-bound region while the GPU was nowhere near it. The two tables were never measured at comparable points on the same curve.
+
+**What the L40S tables do support**, stated narrowly:
+
+- The speedup from caching grows with sequence length, and on a GPU it stays near 1x until roughly 1K tokens.
+- A speedup measured on a CPU does not transfer to a GPU at the same sequence length.
+- Absolute per-forward cost at batch 1 is dominated by framework overhead. A runtime using CUDA graphs would show a larger cache benefit at these same lengths, so these numbers bound `transformers`, not the hardware.
+
+**What they do not support**: any claim that caching is unnecessary on GPUs. Everything here is batch 1 at up to 576 generated tokens. Production runs longer contexts and batches, and both push hard toward the compute-bound regime where the cache is worth the 7x to 33x above.
 
 Raw logs and the exact environment are in [`results/`](results/).
 
