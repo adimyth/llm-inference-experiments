@@ -1,0 +1,9 @@
+# Environment behind the Llama 3.1 8B KV caching numbers
+
+NVIDIA L40S, 46068 MiB, 595.91.07
+Cuda compilation tools, release 13.2, V13.2.51
+Build cuda_13.2.r13.2/compiler.37434383_0
+Ubuntu 22.04.5 LTS
+6.8.0-1063-aws
+torch 2.13.0+cu130
+transformers 5.14.1

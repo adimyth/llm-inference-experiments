@@ -1,0 +1,10 @@
+2026-08-30 16:10:28.790 | INFO     | __main__:main:50 - loading gpt2 on cuda
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-08-30 16:10:31.310 | INFO     | __main__:main:53 - torch 2.13.0+cu130, device cuda, dtype torch.float16
+2026-08-30 16:10:32.035 | INFO     | __main__:main:60 - prompt 64 tokens, greedy decoding
+2026-08-30 16:10:32.035 | INFO     | __main__:main:72 - median of 3 runs per cell
+2026-08-30 16:10:33.216 | INFO     | __main__:main:75 -   32 new tokens | no cache   0.19s | cache  0.19s |   1.0x
+2026-08-30 16:10:35.526 | INFO     | __main__:main:75 -   64 new tokens | no cache   0.38s | cache  0.39s |   1.0x
+2026-08-30 16:10:40.155 | INFO     | __main__:main:75 -  128 new tokens | no cache   0.77s | cache  0.77s |   1.0x
+2026-08-30 16:10:49.563 | INFO     | __main__:main:75 -  256 new tokens | no cache   1.56s | cache  1.57s |   1.0x
+2026-08-30 16:11:08.531 | INFO     | __main__:main:75 -  512 new tokens | no cache   3.17s | cache  3.16s |   1.0x

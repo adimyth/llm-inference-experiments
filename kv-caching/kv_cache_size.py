@@ -19,6 +19,7 @@ def gb(*args, **kwargs):
 MODELS = [
     ("Llama-2-7B", 32, 32, 128, 4_096, "multi-head, 32 KV heads"),
     ("Llama-3-8B", 32, 8, 128, 8_192, "grouped-query, 8 KV heads"),
+    ("Llama-3.1-8B", 32, 8, 128, 131_072, "grouped-query, 8 KV heads"),
     ("Mistral-7B", 32, 8, 128, 32_768, "grouped-query, 8 KV heads"),
 ]
 

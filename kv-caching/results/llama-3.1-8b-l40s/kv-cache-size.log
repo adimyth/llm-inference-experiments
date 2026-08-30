@@ -1,0 +1,12 @@
+2026-08-30 16:08:29.656 | INFO     | __main__:<module>:29 - one sequence, fp16, at each model's published context limit
+2026-08-30 16:08:29.656 | INFO     | __main__:<module>:31 - Llama-2-7B   multi-head, 32 KV heads    ctx=  4096   2.00 GB
+2026-08-30 16:08:29.656 | INFO     | __main__:<module>:31 - Llama-3-8B   grouped-query, 8 KV heads  ctx=  8192   1.00 GB
+2026-08-30 16:08:29.656 | INFO     | __main__:<module>:31 - Llama-3.1-8B grouped-query, 8 KV heads  ctx=131072  16.00 GB
+2026-08-30 16:08:29.656 | INFO     | __main__:<module>:31 - Mistral-7B   grouped-query, 8 KV heads  ctx= 32768   4.00 GB
+2026-08-30 16:08:29.656 | INFO     | __main__:<module>:33 - counterfactual: Llama-2's multi-head shape at a 32k window
+2026-08-30 16:08:29.656 | INFO     | __main__:<module>:34 - 16.00 GB of cache, against ~13 GB of fp16 weights
+2026-08-30 16:08:29.656 | INFO     | __main__:<module>:36 - concurrent sessions at full context, 64GB headroom
+2026-08-30 16:08:29.656 | INFO     | __main__:<module>:39 - Llama-2-7B   ctx=  4096   32 sessions
+2026-08-30 16:08:29.657 | INFO     | __main__:<module>:39 - Llama-3-8B   ctx=  8192   64 sessions
+2026-08-30 16:08:29.657 | INFO     | __main__:<module>:39 - Llama-3.1-8B ctx=131072    4 sessions
+2026-08-30 16:08:29.657 | INFO     | __main__:<module>:39 - Mistral-7B   ctx= 32768   16 sessions

@@ -1,0 +1,9 @@
+2026-08-30 16:04:43.473 | INFO     | __main__:main:50 - loading meta-llama/Llama-3.1-8B-Instruct on cuda
+2026-08-30 16:05:12.856 | INFO     | __main__:main:53 - torch 2.13.0+cu130, device cuda, dtype torch.float16
+2026-08-30 16:05:15.481 | INFO     | __main__:main:60 - prompt 64 tokens, greedy decoding
+2026-08-30 16:05:15.481 | INFO     | __main__:main:72 - median of 3 runs per cell
+2026-08-30 16:05:20.951 | INFO     | __main__:main:75 -   32 new tokens | no cache   0.98s | cache  0.77s |   1.3x
+2026-08-30 16:05:31.522 | INFO     | __main__:main:75 -   64 new tokens | no cache   1.98s | cache  1.54s |   1.3x
+2026-08-30 16:05:53.338 | INFO     | __main__:main:75 -  128 new tokens | no cache   4.15s | cache  3.08s |   1.3x
+2026-08-30 16:06:39.032 | INFO     | __main__:main:75 -  256 new tokens | no cache   9.06s | cache  6.17s |   1.5x
+2026-08-30 16:08:22.234 | INFO     | __main__:main:75 -  512 new tokens | no cache  22.09s | cache 12.34s |   1.8x
