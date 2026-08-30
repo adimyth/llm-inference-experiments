@@ -95,13 +95,19 @@ Llama 3.1 8B, fp16, one forward pass on the L40S:
 | 4096 | 375.98 | 14.77x | 10.9 |
 | 8192 | 850.23 | 33.40x | 9.6 |
 
-The 1.65x at 320 tokens, which is the average sequence length in the 512-token timing cell, is the 1.8x measured there. The same arithmetic projects the speedup this experiment *would* have found at realistic lengths:
+The 1.65x at 320 tokens, which is the average sequence length in the 512-token timing cell, is the 1.8x measured there.
 
-| Generated tokens | Projected speedup, Llama on L40S |
-| --- | --- |
-| 512 (what was run) | ~1.8x |
-| 2048 | ~7x |
-| 8192 | ~33x |
+**That `vs len-1` column is a ceiling, not the speedup.** The cached path pays `cost(1)` every step, but the uncached path pays `cost(L)` averaged over every length from the prompt to the end, not the cost at the final length. Integrating over the measured curve instead ([`project_speedup.py`](project_speedup.py)) gives what this experiment would have found at longer generations:
+
+| Generated tokens | Uncached | Cached | Speedup |
+| --- | --- | --- | --- |
+| 512 (what was run) | 21.19s | 13.04s | 1.6x, measured 1.8x |
+| 1024 | 59.52s | 26.07s | 2.3x |
+| 2048 | 201.63s | 52.14s | 3.9x |
+| 4096 | 780.09s | 104.28s | 7.5x |
+| 8192 | 3321.48s | 208.57s | 15.9x |
+
+Only the 512 row was measured end to end. The rest are projections, and the method is validated on that row to within 6%, predicting 1.63x against a measured 1.79x, so it runs slightly conservative.
 
 A single-token forward costs 25.46 ms and moves 0.04 tokens per millisecond. The card is idle; that time is fixed cost, most of it `transformers` Python dispatch rather than CUDA launch overhead, since 150-odd kernels cannot account for GPT-2's 6.4 ms. Until the sequence is long enough for arithmetic to exceed that fixed cost, both paths pay roughly the same and the ratio sits near 1.
 
