@@ -45,7 +45,16 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 GROUP_SIZE = 128
 NUM_CALIBRATION_SAMPLES = 256
 MAX_SEQUENCE_LENGTH = 2048
-CALIBRATION_DATASET = "HuggingFaceH4/ultrachat_200k"
+# Calibration sources. `ultrachat` is chat text and needs the chat template applied;
+# `c4` is general web text with a plain `text` field, and is what the GPTQ and AWQ
+# papers both calibrated on. One shard is plenty for a few hundred samples.
+CALIBRATION_SETS = {
+    "ultrachat": dict(id="HuggingFaceH4/ultrachat_200k", split="train_sft", field="messages"),
+    "c4": dict(id="allenai/c4", split="train", field="text",
+               data_files={"train": "en/c4-train.00000-of-01024.json.gz"}),
+}
+CALIBRATION_DATASET = "ultrachat"
+DEFAULT_SEED = 42
 METHOD = "gptq"
 
 
@@ -53,16 +62,21 @@ def dir_size_gb(path: Path) -> float:
     return sum(f.stat().st_size for f in path.rglob("*") if f.is_file()) / 1024**3
 
 
-def build_calibration_set(tokenizer, n_samples: int, max_seq_len: int):
+def build_calibration_set(tokenizer, n_samples: int, max_seq_len: int, dataset: str, seed: int):
     """Chat-formatted calibration text.
 
     Shuffled with a fixed seed, and identical to the set gptq/quantize.py and awq/quantize.py both build, so the two methods differ by their algorithm and not by the data they saw.
     """
-    ds = load_dataset(CALIBRATION_DATASET, split=f"train_sft[:{n_samples}]")
-    ds = ds.shuffle(seed=42)
+    spec = CALIBRATION_SETS[dataset]
+    kwargs = {k: v for k, v in spec.items() if k in ("data_files",)}
+    ds = load_dataset(spec["id"], split=f"{spec['split']}[:{n_samples}]", **kwargs)
+    ds = ds.shuffle(seed=seed)
 
     def to_text(example):
-        return {"text": tokenizer.apply_chat_template(example["messages"], tokenize=False)}
+        raw = example[spec["field"]]
+        # chat data arrives as a list of message dicts and needs the template;
+        # plain-text corpora like C4 are already strings.
+        return {"text": tokenizer.apply_chat_template(raw, tokenize=False) if spec["field"] == "messages" else raw}
 
     def tokenize(sample):
         return tokenizer(
@@ -77,25 +91,26 @@ def build_calibration_set(tokenizer, n_samples: int, max_seq_len: int):
     return ds.map(tokenize, remove_columns=ds.column_names)
 
 
-def recipe():
+def recipe(scheme: str):
     # GPTQModifier does both the error-compensating solve and the rounding, so unlike AWQ it needs no separate QuantizationModifier.
-    return GPTQModifier(targets="Linear", scheme="W4A16", ignore=["lm_head"])
+    return GPTQModifier(targets="Linear", scheme=scheme, ignore=["lm_head"])
 
 
-def quantize(hf_dir: str, out_dir: Path, n_samples: int, max_seq_len: int) -> None:
+def quantize(hf_dir: str, out_dir: Path, n_samples: int, max_seq_len: int,
+             dataset: str, seed: int, scheme: str) -> None:
     logger.info(f"loading {hf_dir}")
     model = AutoModelForCausalLM.from_pretrained(hf_dir, dtype="auto", device_map="auto")
     tokenizer = AutoTokenizer.from_pretrained(hf_dir)
 
     logger.info(f"building calibration set: {n_samples} samples, max {max_seq_len} tokens")
-    ds = build_calibration_set(tokenizer, n_samples, max_seq_len)
+    ds = build_calibration_set(tokenizer, n_samples, max_seq_len, dataset, seed)
 
     logger.info(f"quantizing with {METHOD.upper()}, 4-bit, group size {GROUP_SIZE}")
     # oneshot returns the calibrated model (`return one_shot.model`). Bind it rather than relying on the passed-in object having been mutated in place, so a future change there can't have us silently saving unquantized weights.
     model = oneshot(
         model=model,
         dataset=ds,
-        recipe=recipe(),
+        recipe=recipe(scheme),
         max_seq_length=max_seq_len,
         num_calibration_samples=n_samples,
     )
@@ -113,10 +128,16 @@ if __name__ == "__main__":
     parser.add_argument("--label", default=f"{METHOD}-q4", help="results.json label")
     parser.add_argument("--num-samples", type=int, default=NUM_CALIBRATION_SAMPLES)
     parser.add_argument("--max-seq-len", type=int, default=MAX_SEQUENCE_LENGTH)
+    parser.add_argument("--calibration", default=CALIBRATION_DATASET, choices=sorted(CALIBRATION_SETS),
+                        help="which corpus to calibrate on; c4 is what the papers used")
+    parser.add_argument("--seed", type=int, default=DEFAULT_SEED, help="calibration shuffle seed")
+    parser.add_argument("--scheme", default="W4A16",
+                        help="compressed-tensors preset, e.g. W4A16 or W4A16_ASYM")
     args = parser.parse_args()
 
     out_dir = Path(args.out_dir)
-    quantize(args.hf_dir, out_dir, args.num_samples, args.max_seq_len)
+    quantize(args.hf_dir, out_dir, args.num_samples, args.max_seq_len,
+             args.calibration, args.seed, args.scheme)
 
     # Written straight into results.json rather than derived from the file later: these checkpoints live on a rented GPU box and are never downloaded, so plot.py reads their size from here instead.
     update(args.label, "size_gb", dir_size_gb(out_dir))
@@ -124,7 +145,9 @@ if __name__ == "__main__":
         "method": METHOD,
         "bits": 4,
         "group_size": GROUP_SIZE,
-        "calibration_dataset": CALIBRATION_DATASET,
+        "calibration_dataset": args.calibration,
+        "calibration_seed": args.seed,
+        "scheme": args.scheme,
         "calibration_samples": args.num_samples,
         "max_seq_length": args.max_seq_len,
     })
