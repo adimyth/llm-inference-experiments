@@ -259,5 +259,74 @@
       "n_tokens_scored": 144384,
       "engine": "mlx"
     }
+  },
+  "gptq-seed43": {
+    "size_gb": 5.325206419453025,
+    "quantization": {
+      "method": "gptq",
+      "bits": 4,
+      "group_size": 128,
+      "calibration_dataset": "ultrachat",
+      "calibration_seed": 43,
+      "scheme": "W4A16",
+      "calibration_samples": 256,
+      "max_seq_length": 2048
+    },
+    "perplexity": {
+      "ppl": 7.9575266187806415,
+      "n_chunks": 564,
+      "ctx_size": 512,
+      "scored_per_chunk": 256,
+      "n_tokens_scored": 144384,
+      "device": "cuda",
+      "dtype": "auto",
+      "engine": "transformers"
+    }
+  },
+  "gptq-asym": {
+    "size_gb": 5.350622701458633,
+    "quantization": {
+      "method": "gptq",
+      "bits": 4,
+      "group_size": 128,
+      "calibration_dataset": "ultrachat",
+      "calibration_seed": 42,
+      "scheme": "W4A16_ASYM",
+      "calibration_samples": 256,
+      "max_seq_length": 2048
+    },
+    "perplexity": {
+      "ppl": 7.773275583874443,
+      "n_chunks": 564,
+      "ctx_size": 512,
+      "scored_per_chunk": 256,
+      "n_tokens_scored": 144384,
+      "device": "cuda",
+      "dtype": "auto",
+      "engine": "transformers"
+    }
+  },
+  "gptq-c4": {
+    "size_gb": 5.325206419453025,
+    "quantization": {
+      "method": "gptq",
+      "bits": 4,
+      "group_size": 128,
+      "calibration_dataset": "c4",
+      "calibration_seed": 42,
+      "scheme": "W4A16",
+      "calibration_samples": 256,
+      "max_seq_length": 2048
+    },
+    "perplexity": {
+      "ppl": 7.797228640454241,
+      "n_chunks": 564,
+      "ctx_size": 512,
+      "scored_per_chunk": 256,
+      "n_tokens_scored": 144384,
+      "device": "cuda",
+      "dtype": "auto",
+      "engine": "transformers"
+    }
   }
 }
