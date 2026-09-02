@@ -1,0 +1,784 @@
+{
+  "slices": [
+    512,
+    896,
+    1024,
+    1088,
+    1792,
+    1920,
+    5000
+  ],
+  "models": {
+    "gpt-5.6-terra": {
+      "rows": {
+        "512": {
+          "sent_tokens": 553,
+          "rows": [
+            {
+              "input_tokens": 563,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 563,
+              "output_tokens": 44,
+              "seconds": 2.858364875020925,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 563,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 563,
+              "output_tokens": 54,
+              "seconds": 2.5512816670234315,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 563,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 563,
+              "output_tokens": 48,
+              "seconds": 2.3947349159861915,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 0
+        },
+        "896": {
+          "sent_tokens": 939,
+          "rows": [
+            {
+              "input_tokens": 949,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 949,
+              "output_tokens": 27,
+              "seconds": 2.403801500040572,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 949,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 949,
+              "output_tokens": 26,
+              "seconds": 2.9021974580246024,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 949,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 949,
+              "output_tokens": 42,
+              "seconds": 3.2198360409820452,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 0
+        },
+        "1024": {
+          "sent_tokens": 1065,
+          "rows": [
+            {
+              "input_tokens": 1075,
+              "cached_tokens": 0,
+              "cache_write_tokens": 1072,
+              "uncached_tokens": 3,
+              "output_tokens": 47,
+              "seconds": 4.827555041993037,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1075,
+              "cached_tokens": 1072,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 3,
+              "output_tokens": 40,
+              "seconds": 2.611430582997855,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1075,
+              "cached_tokens": 1072,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 3,
+              "output_tokens": 55,
+              "seconds": 3.146594666992314,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 1072
+        },
+        "1088": {
+          "sent_tokens": 1129,
+          "rows": [
+            {
+              "input_tokens": 1139,
+              "cached_tokens": 0,
+              "cache_write_tokens": 1136,
+              "uncached_tokens": 3,
+              "output_tokens": 29,
+              "seconds": 2.0898467089864425,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1139,
+              "cached_tokens": 1136,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 3,
+              "output_tokens": 29,
+              "seconds": 2.5862622910062782,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1139,
+              "cached_tokens": 1136,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 3,
+              "output_tokens": 29,
+              "seconds": 1.4747980830143206,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 1136
+        },
+        "1792": {
+          "sent_tokens": 1835,
+          "rows": [
+            {
+              "input_tokens": 1845,
+              "cached_tokens": 0,
+              "cache_write_tokens": 1842,
+              "uncached_tokens": 3,
+              "output_tokens": 29,
+              "seconds": 1.8393395409802906,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1845,
+              "cached_tokens": 1842,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 3,
+              "output_tokens": 29,
+              "seconds": 1.9621436669840477,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1845,
+              "cached_tokens": 1842,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 3,
+              "output_tokens": 29,
+              "seconds": 1.7828797079855576,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 1842
+        },
+        "1920": {
+          "sent_tokens": 1960,
+          "rows": [
+            {
+              "input_tokens": 1970,
+              "cached_tokens": 0,
+              "cache_write_tokens": 1967,
+              "uncached_tokens": 3,
+              "output_tokens": 29,
+              "seconds": 2.1320520829758607,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1970,
+              "cached_tokens": 1967,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 3,
+              "output_tokens": 29,
+              "seconds": 2.766279959003441,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1970,
+              "cached_tokens": 1967,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 3,
+              "output_tokens": 29,
+              "seconds": 3.3730232500238344,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 1967
+        },
+        "5000": {
+          "sent_tokens": 5039,
+          "rows": [
+            {
+              "input_tokens": 5049,
+              "cached_tokens": 0,
+              "cache_write_tokens": 5046,
+              "uncached_tokens": 3,
+              "output_tokens": 29,
+              "seconds": 1.6431162080261856,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 5049,
+              "cached_tokens": 5046,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 3,
+              "output_tokens": 37,
+              "seconds": 1.806322459015064,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 5049,
+              "cached_tokens": 5046,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 3,
+              "output_tokens": 29,
+              "seconds": 1.350701583956834,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 5046
+        }
+      },
+      "first_slice_that_cached": 1024
+    },
+    "gpt-5.4": {
+      "rows": {
+        "512": {
+          "sent_tokens": 554,
+          "rows": [
+            {
+              "input_tokens": 564,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 564,
+              "output_tokens": 64,
+              "seconds": 2.396027208014857,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 564,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 564,
+              "output_tokens": 64,
+              "seconds": 2.4669374999939464,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 564,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 564,
+              "output_tokens": 64,
+              "seconds": 1.7645998750231229,
+              "retried": true,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 0
+        },
+        "896": {
+          "sent_tokens": 937,
+          "rows": [
+            {
+              "input_tokens": 947,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 947,
+              "output_tokens": 64,
+              "seconds": 1.8283236660063267,
+              "retried": true,
+              "ok": true
+            },
+            {
+              "input_tokens": 947,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 947,
+              "output_tokens": 64,
+              "seconds": 2.0908613330102526,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 947,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 947,
+              "output_tokens": 64,
+              "seconds": 1.839085832994897,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 0
+        },
+        "1024": {
+          "sent_tokens": 1065,
+          "rows": [
+            {
+              "input_tokens": 1075,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 1075,
+              "output_tokens": 60,
+              "seconds": 1.7585133339744061,
+              "retried": true,
+              "ok": true
+            },
+            {
+              "input_tokens": 1075,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 1075,
+              "output_tokens": 61,
+              "seconds": 1.7772272090078332,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1075,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 1075,
+              "output_tokens": 63,
+              "seconds": 1.6549597500124946,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 0
+        },
+        "1088": {
+          "sent_tokens": 1127,
+          "rows": [
+            {
+              "input_tokens": 1137,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 1137,
+              "output_tokens": 46,
+              "seconds": 1.5656774590024725,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1137,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 1137,
+              "output_tokens": 50,
+              "seconds": 2.725204041984398,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1137,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 1137,
+              "output_tokens": 42,
+              "seconds": 1.8282331670052372,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 0
+        },
+        "1792": {
+          "sent_tokens": 1835,
+          "rows": [
+            {
+              "input_tokens": 1845,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 1845,
+              "output_tokens": 50,
+              "seconds": 1.6007030000328086,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1845,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 1845,
+              "output_tokens": 50,
+              "seconds": 1.5455126249580644,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1845,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 1845,
+              "output_tokens": 49,
+              "seconds": 1.416137958993204,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 0
+        },
+        "1920": {
+          "sent_tokens": 1961,
+          "rows": [
+            {
+              "input_tokens": 1971,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 1971,
+              "output_tokens": 56,
+              "seconds": 1.3376337080262601,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1971,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 1971,
+              "output_tokens": 47,
+              "seconds": 1.8444327079923823,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1971,
+              "cached_tokens": 1792,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 179,
+              "output_tokens": 49,
+              "seconds": 1.4309934159973636,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 1792
+        },
+        "5000": {
+          "sent_tokens": 5040,
+          "rows": [
+            {
+              "input_tokens": 5050,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 5050,
+              "output_tokens": 35,
+              "seconds": 1.5937625409569591,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 5050,
+              "cached_tokens": 4864,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 186,
+              "output_tokens": 43,
+              "seconds": 2.2070403749821708,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 5050,
+              "cached_tokens": 4864,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 186,
+              "output_tokens": 40,
+              "seconds": 1.734609459002968,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 4864
+        }
+      },
+      "first_slice_that_cached": 1920
+    },
+    "gpt-4o": {
+      "rows": {
+        "512": {
+          "sent_tokens": 554,
+          "rows": [
+            {
+              "input_tokens": 565,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 565,
+              "output_tokens": 18,
+              "seconds": 1.7574838330037892,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 565,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 565,
+              "output_tokens": 15,
+              "seconds": 1.4857970419689082,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 565,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 565,
+              "output_tokens": 14,
+              "seconds": 1.5526911670458503,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 0
+        },
+        "896": {
+          "sent_tokens": 939,
+          "rows": [
+            {
+              "input_tokens": 950,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 950,
+              "output_tokens": 18,
+              "seconds": 1.1582426250097342,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 950,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 950,
+              "output_tokens": 16,
+              "seconds": 1.068126250000205,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 950,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 950,
+              "output_tokens": 17,
+              "seconds": 1.3697773750172928,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 0
+        },
+        "1024": {
+          "sent_tokens": 1064,
+          "rows": [
+            {
+              "input_tokens": 1075,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 1075,
+              "output_tokens": 19,
+              "seconds": 1.6167119589517824,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1075,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 1075,
+              "output_tokens": 18,
+              "seconds": 1.5127469579456374,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1075,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 1075,
+              "output_tokens": 18,
+              "seconds": 1.2393957080203108,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 0
+        },
+        "1088": {
+          "sent_tokens": 1130,
+          "rows": [
+            {
+              "input_tokens": 1141,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 1141,
+              "output_tokens": 21,
+              "seconds": 1.4083837909856811,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1141,
+              "cached_tokens": 1024,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 117,
+              "output_tokens": 21,
+              "seconds": 1.277412458031904,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1141,
+              "cached_tokens": 1024,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 117,
+              "output_tokens": 21,
+              "seconds": 1.4169678330072202,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 1024
+        },
+        "1792": {
+          "sent_tokens": 1833,
+          "rows": [
+            {
+              "input_tokens": 1844,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 1844,
+              "output_tokens": 21,
+              "seconds": 2.235690750007052,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1844,
+              "cached_tokens": 1664,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 180,
+              "output_tokens": 21,
+              "seconds": 2.0604052920243703,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1844,
+              "cached_tokens": 1664,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 180,
+              "output_tokens": 21,
+              "seconds": 1.1546155830146745,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 1664
+        },
+        "1920": {
+          "sent_tokens": 1962,
+          "rows": [
+            {
+              "input_tokens": 1973,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 1973,
+              "output_tokens": 21,
+              "seconds": 1.6493549580336548,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1973,
+              "cached_tokens": 1792,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 181,
+              "output_tokens": 21,
+              "seconds": 1.0497015409637243,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 1973,
+              "cached_tokens": 1792,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 181,
+              "output_tokens": 21,
+              "seconds": 1.3794753749971278,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 1792
+        },
+        "5000": {
+          "sent_tokens": 5041,
+          "rows": [
+            {
+              "input_tokens": 5052,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 5052,
+              "output_tokens": 21,
+              "seconds": 2.0115381670184433,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 5052,
+              "cached_tokens": 4864,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 188,
+              "output_tokens": 21,
+              "seconds": 1.4184007500298321,
+              "retried": false,
+              "ok": true
+            },
+            {
+              "input_tokens": 5052,
+              "cached_tokens": 4864,
+              "cache_write_tokens": 0,
+              "uncached_tokens": 188,
+              "output_tokens": 21,
+              "seconds": 1.3824407089850865,
+              "retried": false,
+              "ok": true
+            }
+          ],
+          "cached_after_first": 4864
+        }
+      },
+      "first_slice_that_cached": 1088
+    }
+  }
+}

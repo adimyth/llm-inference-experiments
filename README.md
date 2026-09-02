@@ -6,7 +6,7 @@ One folder per topic. Each has its own README with the commands, the setup they 
 
 | Folder | Essay | What it measures |
 | --- | --- | --- |
-| [kv-caching](kv-caching/) | [KV Caching](https://adimyth.in/essays/llm-inference-kv-caching) | Cache size against the formula, and what caching is worth in wall time |
+| [kv-caching](kv-caching/) | [KV Caching](https://adimyth.in/essays/llm-inference-kv-caching) | Cache size against the formula, what caching is worth in wall time, and what hosted prompt caching costs when the prefix is unstable |
 | [speculative-decoding](speculative-decoding/) | [Speculative Decoding](https://adimyth.in/essays/llm-inference-speculative-decoding) | Speedup, acceptance, and discarded compute across lookahead and workload |
 | [model-quantization](model-quantization/) | [Post-Training Quantization](https://adimyth.in/essays/llm-inference-quantization) | Size, speed, perplexity, and MMLU accuracy across six quantization methods, against the fp16 baseline |
 
@@ -34,6 +34,8 @@ These apply to every folder.
 - Models are warmed before timing. The first forward pass pays lazy initialisation and will otherwise land in the measurement.
 - Cells are medians of repeated runs. Single runs produced non-monotonic acceptance, which was measurement noise rather than a finding.
 - Charts render light and dark separately rather than inverting one image.
+
+The three `prompt_cache_*.py` scripts in `kv-caching` are the exception to all of this. They call a hosted API rather than running a model locally, so they need `OPENAI_API_KEY`, a network, and about a dollar. What they measure is a vendor's pricing and thresholds rather than anything about the hardware, so those numbers carry a date and should be re-measured rather than trusted.
 
 Hardware for all measurements unless a README says otherwise: MacBook Pro, Apple M4 Pro (8P+4E), 48GB, macOS 15.7.5, torch 2.13.0, transformers 5.15.1.
 

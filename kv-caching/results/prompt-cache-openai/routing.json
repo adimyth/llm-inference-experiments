@@ -1,0 +1,361 @@
+{
+  "requests": 8,
+  "models": {
+    "gpt-4o": {
+      "no_key": {
+        "rows": [
+          {
+            "input_tokens": 5195,
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 5195,
+            "output_tokens": 21,
+            "seconds": 3.27495083399117,
+            "retried": false
+          },
+          {
+            "input_tokens": 5195,
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 5195,
+            "output_tokens": 21,
+            "seconds": 1.611819125013426,
+            "retried": false
+          },
+          {
+            "input_tokens": 5195,
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 5195,
+            "output_tokens": 21,
+            "seconds": 1.3888631669688039,
+            "retried": false
+          },
+          {
+            "input_tokens": 5195,
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 5195,
+            "output_tokens": 21,
+            "seconds": 3.194102334033232,
+            "retried": false
+          },
+          {
+            "input_tokens": 5195,
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 5195,
+            "output_tokens": 21,
+            "seconds": 2.046929916017689,
+            "retried": false
+          },
+          {
+            "input_tokens": 5195,
+            "cached_tokens": 4992,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 203,
+            "output_tokens": 21,
+            "seconds": 1.222070750023704,
+            "retried": false
+          },
+          {
+            "input_tokens": 5195,
+            "cached_tokens": 4992,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 203,
+            "output_tokens": 21,
+            "seconds": 5.685342208016664,
+            "retried": false
+          },
+          {
+            "input_tokens": 5195,
+            "cached_tokens": 4992,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 203,
+            "output_tokens": 21,
+            "seconds": 1.168188709008973,
+            "retried": false
+          }
+        ],
+        "hits": 3,
+        "of": 7,
+        "cached_sequence": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          4992,
+          4992,
+          4992
+        ]
+      },
+      "with_key": {
+        "rows": [
+          {
+            "input_tokens": 5194,
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 5194,
+            "output_tokens": 21,
+            "seconds": 2.389797375013586,
+            "retried": false
+          },
+          {
+            "input_tokens": 5194,
+            "cached_tokens": 4992,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 202,
+            "output_tokens": 21,
+            "seconds": 1.5714776249951683,
+            "retried": false
+          },
+          {
+            "input_tokens": 5194,
+            "cached_tokens": 4992,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 202,
+            "output_tokens": 21,
+            "seconds": 1.3787272080080584,
+            "retried": false
+          },
+          {
+            "input_tokens": 5194,
+            "cached_tokens": 4992,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 202,
+            "output_tokens": 21,
+            "seconds": 1.4451329580042511,
+            "retried": false
+          },
+          {
+            "input_tokens": 5194,
+            "cached_tokens": 4992,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 202,
+            "output_tokens": 21,
+            "seconds": 1.3788927079876885,
+            "retried": false
+          },
+          {
+            "input_tokens": 5194,
+            "cached_tokens": 4992,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 202,
+            "output_tokens": 21,
+            "seconds": 1.5783543330035172,
+            "retried": false
+          },
+          {
+            "input_tokens": 5194,
+            "cached_tokens": 4992,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 202,
+            "output_tokens": 21,
+            "seconds": 1.6651937919668853,
+            "retried": false
+          },
+          {
+            "input_tokens": 5194,
+            "cached_tokens": 4992,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 202,
+            "output_tokens": 21,
+            "seconds": 1.422656124981586,
+            "retried": false
+          }
+        ],
+        "hits": 7,
+        "of": 7,
+        "cached_sequence": [
+          0,
+          4992,
+          4992,
+          4992,
+          4992,
+          4992,
+          4992,
+          4992
+        ]
+      }
+    },
+    "gpt-5.4": {
+      "no_key": {
+        "rows": [
+          {
+            "input_tokens": 5192,
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 5192,
+            "output_tokens": 37,
+            "seconds": 1.4382976249908097,
+            "retried": false
+          },
+          {
+            "input_tokens": 5192,
+            "cached_tokens": 4864,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 328,
+            "output_tokens": 44,
+            "seconds": 1.4713723749737255,
+            "retried": false
+          },
+          {
+            "input_tokens": 5192,
+            "cached_tokens": 4864,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 328,
+            "output_tokens": 42,
+            "seconds": 3.5757491249823943,
+            "retried": false
+          },
+          {
+            "input_tokens": 5192,
+            "cached_tokens": 4864,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 328,
+            "output_tokens": 43,
+            "seconds": 1.9402131660026498,
+            "retried": false
+          },
+          {
+            "input_tokens": 5192,
+            "cached_tokens": 4864,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 328,
+            "output_tokens": 44,
+            "seconds": 1.8092188750160858,
+            "retried": false
+          },
+          {
+            "input_tokens": 5192,
+            "cached_tokens": 4864,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 328,
+            "output_tokens": 34,
+            "seconds": 1.706858832971193,
+            "retried": false
+          },
+          {
+            "input_tokens": 5192,
+            "cached_tokens": 4864,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 328,
+            "output_tokens": 36,
+            "seconds": 1.6505374580156058,
+            "retried": false
+          },
+          {
+            "input_tokens": 5192,
+            "cached_tokens": 4864,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 328,
+            "output_tokens": 44,
+            "seconds": 1.9512431669863872,
+            "retried": false
+          }
+        ],
+        "hits": 7,
+        "of": 7,
+        "cached_sequence": [
+          0,
+          4864,
+          4864,
+          4864,
+          4864,
+          4864,
+          4864,
+          4864
+        ]
+      },
+      "with_key": {
+        "rows": [
+          {
+            "input_tokens": 5189,
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 5189,
+            "output_tokens": 40,
+            "seconds": 1.6723824169603176,
+            "retried": false
+          },
+          {
+            "input_tokens": 5189,
+            "cached_tokens": 4864,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 325,
+            "output_tokens": 34,
+            "seconds": 1.708191292011179,
+            "retried": false
+          },
+          {
+            "input_tokens": 5189,
+            "cached_tokens": 4864,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 325,
+            "output_tokens": 37,
+            "seconds": 1.7014489159919322,
+            "retried": false
+          },
+          {
+            "input_tokens": 5189,
+            "cached_tokens": 4864,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 325,
+            "output_tokens": 36,
+            "seconds": 3.8207514579989947,
+            "retried": false
+          },
+          {
+            "input_tokens": 5189,
+            "cached_tokens": 4864,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 325,
+            "output_tokens": 37,
+            "seconds": 1.4181396249914542,
+            "retried": false
+          },
+          {
+            "input_tokens": 5189,
+            "cached_tokens": 4864,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 325,
+            "output_tokens": 37,
+            "seconds": 1.4610610830131918,
+            "retried": false
+          },
+          {
+            "input_tokens": 5189,
+            "cached_tokens": 4864,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 325,
+            "output_tokens": 36,
+            "seconds": 1.6848515829769894,
+            "retried": false
+          },
+          {
+            "input_tokens": 5189,
+            "cached_tokens": 4864,
+            "cache_write_tokens": 0,
+            "uncached_tokens": 325,
+            "output_tokens": 33,
+            "seconds": 1.6577394579653628,
+            "retried": false
+          }
+        ],
+        "hits": 7,
+        "of": 7,
+        "cached_sequence": [
+          0,
+          4864,
+          4864,
+          4864,
+          4864,
+          4864,
+          4864,
+          4864
+        ]
+      }
+    }
+  }
+}

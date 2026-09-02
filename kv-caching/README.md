@@ -159,3 +159,95 @@ $PY kv_cache_timing.py --model gpt2 --device cuda --dtype float32 \
 ```
 
 `kv_cache_timing.py` keeps GPT-2 on CPU as its defaults, so the table further up reproduces with no flags. It calls `torch.cuda.synchronize()` around every timed region; without that on CUDA you time kernel launches rather than generation.
+
+---
+
+## Prompt caching, against a hosted API
+
+The three scripts above run offline and cost nothing. The three below call OpenAI, so they need `OPENAI_API_KEY`, a network, and roughly a dollar for a full pass. They measure the commercial version of prefix caching rather than the mechanism, which means they measure policy: the numbers are prices, and prices change.
+
+Everything here was measured on 2026-09-02 with `openai` 3.7.0. The fixture is [`fixtures/support_handbook.txt`](fixtures/support_handbook.txt), 5,144 tokens of invented support policy, which stands in for the fixed document a support agent answers against.
+
+```bash
+cd kv-caching
+export OPENAI_API_KEY=sk-...
+../.venv/bin/python prompt_cache_placement.py
+../.venv/bin/python prompt_cache_floor.py
+../.venv/bin/python prompt_cache_routing.py
+```
+
+All three take `--models`. The first two take `--dry-run`, which builds the prompts and prints their token counts without calling anything.
+
+### prompt_cache_placement.py
+
+The handbook is identical on every request, the question differs on every request, nothing else varies. Two pieces and two fields gives four arrangements:
+
+```
+A   user:   [question][handbook]
+B   user:   [handbook][question]
+C   system: [handbook]            user: [question]
+D   system: [question]            user: [handbook]
+```
+
+Eight requests per condition, same eight questions in the same order, same token count. Requests that read from cache, out of the seven that could:
+
+| Model | A | B | C | D | Cache write rate |
+| --- | --- | --- | --- | --- | --- |
+| gpt-5.6-terra | 0/7 | 0/7 | 7/7 | 0/7 | 1.25x |
+| gpt-4o | 0/7 | 7/7 | 7/7 | 0/7 | no charge |
+| gpt-5.4 | 0/7 | 7/7 | 6/7 | 0/7 | no charge |
+
+**A and D never cache.** Both lead with the question. D is the control: putting the question in the system field saves nothing, so position matters and the field itself does not.
+
+**B is where the models disagree.** Leading with the handbook inside the user message works on gpt-4o and gpt-5.4 and does nothing on gpt-5.6. A direct check confirmed it: the same handbook caches on gpt-5.6 from `instructions` and not from the head of the user message.
+
+**C works on all three.** Give the fixed document its own field.
+
+Billed input cost as a multiple of the same eight requests with no caching:
+
+| Model | A | B | C | D |
+| --- | --- | --- | --- | --- |
+| gpt-5.6-terra | 1.25x | 1.25x | 0.25x | 1.25x |
+| gpt-4o | 1.00x | 0.25x | 0.25x | 1.00x |
+| gpt-5.4 | 1.00x | 0.27x | 0.37x | 1.00x |
+
+On gpt-5.6 the three failing columns cost more than not caching, because each request writes an entry at 1.25x and none is read back. gpt-5.4's 0.37x in column C is one stray miss out of seven rather than a real difference from column B; its hit counts are the more stable reading. The ratio also depends on how many requests share the prefix, since the single write amortises over the reads that follow: at five requests column C measured 0.33x, at eight it measures 0.25x, and the floor is the 0.1x read rate.
+
+### prompt_cache_floor.py
+
+Slices the handbook to exact token counts and sends each three times. The minimums are published (1,024 on gpt-5.6 and later, 2,048 on earlier models, with a note that some earlier models cache shorter prefixes), so this checks the published number against the model actually being called.
+
+| Model | Largest prompt that cached nothing | Smallest that cached | Published minimum | Reported granularity |
+| --- | --- | --- | --- | --- |
+| gpt-5.6-terra | 939 | 1,065 | 1,024 | exact |
+| gpt-4o | 1,064 | 1,130 | 2,048 | rounded down to a multiple of 128 |
+| gpt-5.4 | 1,835 | 1,961 | 2,048 | rounded down to a multiple of 128 |
+
+gpt-4o caches from roughly half its published figure while gpt-5.4 sits where the documentation says, and both fall under the same published number. The hedge in the docs is load-bearing, and you cannot plan against a hedge.
+
+Below the threshold nothing caches, nothing errors, and no field in the response says so.
+
+Granularity is visible in the read column: gpt-5.6 reads back the exact prefix it wrote, while the older two round down, so gpt-5.4 turns a 5,040-token prefix into 4,864, which is 38 x 128.
+
+### prompt_cache_routing.py
+
+The same prompt eight times, once with no `prompt_cache_key` and once with one. Request 1 has nothing to read, so the denominator is 7.
+
+| Model | Without the key | With it |
+| --- | --- | --- |
+| gpt-4o | 3/7 | 7/7 |
+| gpt-5.4 | 7/7 | 7/7 |
+
+The parameter is a routing hint rather than a guarantee, and the documentation is explicit that it does not pin a request to a machine. gpt-5.4 was already sticky in this run and the key changed nothing. Treat this as a demonstration that the lever exists, not as a number to quote: it depends on how busy the fleet is, and it will vary between runs.
+
+### Two things that quietly break these measurements
+
+Both produce plausible-looking numbers rather than errors.
+
+**A run reads the previous run's cache.** Every run prepends a random nonce to the front of the prefix so it gets its own namespace. Without it, request 1 of a fresh run reads an entry the last run wrote and reports a hit that this run did not earn.
+
+**Short slices warm long ones.** A 512-token slice is a byte-for-byte prefix of the 1,024-token slice, so sweeping upward warms each size from the one before it and every threshold after the first is wrong. Each slice gets its own nonce.
+
+There is also a retry path. A response occasionally returns with all token counts at zero, which is not a measurement, so it is discarded and re-sent. The discarded attempt still warms the cache, so a retry anywhere in a placement condition throws that whole condition away and restarts it under a fresh nonce. Without that, the retried request scores a hit in condition A, where by construction nothing should ever hit.
+
+Raw output is in [`results/prompt-cache-openai/`](results/prompt-cache-openai/).

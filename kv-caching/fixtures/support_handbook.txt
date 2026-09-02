@@ -1,0 +1,311 @@
+NORTHWIND DEVICES
+SUPPORT AGENT HANDBOOK
+Revision 14. Internal use only.
+
+SECTION 1. SCOPE AND PURPOSE
+
+This handbook is the operating reference for every agent handling customer contact on behalf of Northwind Devices. It covers warranty terms, return and refund handling, shipping and logistics, service level commitments, escalation paths, billing and account administration, privacy obligations, and the tone we expect in every written and spoken interaction.
+
+Agents are expected to answer from this handbook rather than from memory or from what a previous employer did. Where this handbook is silent, the correct action is to escalate rather than to improvise. Where this handbook conflicts with something a customer believes they were told, the handbook governs, and the discrepancy is logged so that the source of the wrong information can be corrected.
+
+This document is revised quarterly. The revision number appears at the top of every page in the printed edition and in the header of the electronic edition. Agents working from a revision more than two versions behind the current one should stop and request the current copy before continuing to handle contacts.
+
+SECTION 2. DEFINITIONS
+
+Business day means Monday through Friday, excluding public holidays observed in the jurisdiction of the handling office. Where a customer is in a different jurisdiction from the handling office, the handling office's calendar applies to internal deadlines and the customer's calendar applies to any commitment communicated to the customer.
+
+Contact means any inbound interaction from a customer, whether by telephone, email, chat, or the in-product help widget. A single customer issue may involve several contacts. Contacts are counted individually for volume reporting and grouped by issue for resolution reporting.
+
+Case means the record covering one customer issue from first contact through resolution. Cases carry a unique identifier in the form NW followed by eight digits. Agents must quote the case identifier in every outbound communication.
+
+Device means any hardware product sold under the Northwind Devices brand, including products sold through authorised resellers. Accessories sold under the brand are devices for the purposes of warranty but not for the purposes of the extended service plan.
+
+Eligible purchaser means the original end purchaser of a device, or a person to whom the device was transferred as a gift where the original purchaser has confirmed the transfer. Devices acquired through resale marketplaces are covered for the remainder of the manufacturer warranty but are not eligible for the extended service plan or for goodwill adjustments.
+
+Proof of purchase means a dated receipt or invoice showing the seller, the device model, and the purchase price. A bank statement line item is not proof of purchase on its own. A photograph of a receipt is acceptable provided the four required elements are legible.
+
+Resolution means that the customer's issue has been addressed and the customer has either confirmed satisfaction or has not responded to two follow-up attempts spaced at least three business days apart.
+
+SECTION 3. WARRANTY
+
+3.1 Standard coverage
+
+Every device carries a limited warranty against defects in materials and workmanship for twenty-four months from the date of purchase. Where proof of purchase cannot be produced, coverage runs for twenty-four months from the date of manufacture, which is encoded in the serial number and can be looked up in the service tool.
+
+The warranty covers repair or replacement at Northwind's option. It does not confer a right to a refund except where repair and replacement have both been attempted and have both failed, or where local consumer law provides otherwise.
+
+3.2 What is covered
+
+Failures of the mainboard, display assembly, battery cell, charging circuit, wireless radio, buttons and switches, internal connectors, and enclosure seams are covered where the failure arises in normal use. Battery capacity is covered where measured capacity falls below seventy percent of rated capacity within the warranty period, verified by the service tool rather than by customer report.
+
+Firmware defects are covered without time limit where the defect is acknowledged in a published advisory. Agents should check the advisory index before opening a hardware case for symptoms that match a known firmware issue.
+
+3.3 What is not covered
+
+Cosmetic damage that does not affect function, including scratches, scuffs, and discoloration of external surfaces. Damage from liquid ingress beyond the rated ingress protection level. Damage from drops, crushing, or other impact. Damage from use of a charger not certified for the device. Damage from unauthorised disassembly, indicated by the tamper witness inside the battery bay. Consumable parts including straps, tips, and adhesive mounts. Software or data loss of any kind.
+
+Devices with a removed, altered, or illegible serial number are not covered, and agents must not attempt to infer the serial number from packaging.
+
+3.4 Extended service plan
+
+The extended service plan may be purchased within sixty days of device purchase. It extends coverage to forty-eight months and adds two accidental damage claims per coverage period, each subject to the service fee published in the current fee schedule. The plan is tied to the device serial number and transfers with the device.
+
+The plan may be cancelled within thirty days of purchase for a full refund provided no claim has been made. After thirty days, cancellation produces a pro rata refund calculated on whole remaining months, less the published value of any claim already made.
+
+SECTION 4. RETURNS AND REFUNDS
+
+4.1 The return window
+
+Devices purchased directly from Northwind may be returned within thirty calendar days of delivery for a full refund. The window runs from the delivery date recorded by the carrier, not from the order date and not from the date the customer opened the package.
+
+Devices purchased from an authorised reseller are subject to that reseller's return policy. Agents should not offer a direct return in these cases, and should instead identify the reseller and provide the customer with the reseller's published policy. Where the reseller has ceased trading, escalate under the procedure in section 8.
+
+4.2 Condition requirements
+
+Returned devices must include all supplied accessories, cables, and documentation. Missing items are deducted from the refund at the published replacement value. The device must be in a condition consistent with reasonable inspection. A device showing wear consistent with sustained use may be refused or may be refunded net of a restocking deduction of up to twenty percent, applied only with team lead approval and recorded on the case.
+
+Devices must be returned with any account lock or activation lock removed. A device arriving with a lock still engaged cannot be processed, and the customer will be contacted once. If the lock is not removed within fourteen days of that contact, the device is returned to the customer at Northwind's expense and the refund is cancelled.
+
+4.3 Refund timing and method
+
+Approved refunds are issued to the original payment method within five business days of the returned device being received and inspected at the returns centre. The customer's bank may take a further three to five business days to post the credit, and agents should state this explicitly rather than promising same day availability.
+
+Where the original payment method is closed or expired, the refund is issued by bank transfer following identity verification. Agents must never accept bank details supplied in an inbound email without completing verification through the callback procedure.
+
+Refunds of shipping charges are made where the return arises from a defect or from a Northwind error, and are not made where the customer has simply changed their mind.
+
+4.4 Exchanges
+
+An exchange may be offered in place of a refund within the return window. Exchanges are processed as a return and a new order, and the new order ships once the returned device is received unless the customer authorises a hold on the original payment method for the value of the replacement, in which case the replacement ships immediately.
+
+Cross model exchanges are permitted where the customer pays any price difference. Downward exchanges refund the difference to the original payment method.
+
+SECTION 5. SHIPPING AND LOGISTICS
+
+5.1 Standard timelines
+
+Orders placed before fourteen hundred local time on a business day are dispatched the same day. Orders placed after that cutoff, or on a non business day, are dispatched the next business day. Dispatch is not delivery, and agents should quote the delivery estimate rather than the dispatch date.
+
+Standard delivery is two to five business days domestically and seven to fourteen business days internationally. Expedited delivery is one to two business days domestically and is not offered on all international routes.
+
+5.2 Lost and delayed shipments
+
+A domestic shipment is considered delayed at seven business days past dispatch and lost at fourteen. An international shipment is considered delayed at twenty-one business days and lost at thirty. These thresholds are internal and are not quoted to customers as guarantees.
+
+For a delayed shipment, open a carrier trace and inform the customer that the trace takes up to five business days. Do not dispatch a replacement while a trace is open unless the customer has a documented business need and a team lead approves.
+
+For a lost shipment, dispatch a replacement at no charge and close the carrier claim internally. The customer is not required to wait for the carrier claim to conclude.
+
+5.3 Damaged on arrival
+
+Where a device arrives damaged, request photographs of the outer packaging, the inner packaging, and the device itself before authorising a replacement. A replacement is dispatched without requiring the damaged unit to be returned first where the order value is below the threshold in the current fee schedule. Above that threshold, the damaged unit must be received before the replacement dispatches, unless a team lead approves otherwise.
+
+5.4 Address changes and interception
+
+An address change may be requested until the order enters the dispatch queue. After that point the shipment must be intercepted, which the carrier may refuse and which adds three to five business days. Agents should never promise an interception will succeed.
+
+Northwind does not deliver to freight forwarders and does not honour warranty on devices forwarded outside their original destination country.
+
+SECTION 6. SERVICE LEVEL COMMITMENTS
+
+6.1 First response
+
+Chat and telephone contacts are answered within three minutes during published support hours. Email and web form contacts receive a first response within one business day. In-product help widget contacts follow the email commitment.
+
+First response means a substantive response from an agent. An automated acknowledgement does not satisfy the commitment, and agents must not treat an auto-reply as having stopped the clock.
+
+6.2 Resolution targets
+
+Straightforward cases, meaning those resolvable without a repair, a replacement, or a billing adjustment, target resolution within one business day. Cases requiring a replacement target dispatch within two business days of approval. Cases requiring repair target return of the repaired device within ten business days of receipt at the service centre.
+
+These are targets rather than guarantees. Agents must not present them to customers as commitments, and should instead give the customer the date the case is currently expected to complete.
+
+6.3 Priority handling
+
+Business accounts holding a current priority agreement receive a first response within one hour during published hours and are exempt from the replacement hold rules in section 5.3. Priority status is visible on the account record and should never be inferred from the customer describing themselves as a business.
+
+SECTION 7. BILLING AND ACCOUNTS
+
+7.1 Subscription billing
+
+Subscription services bill monthly or annually in advance on the anniversary of activation. A failed payment triggers three retry attempts over seven days, after which the subscription enters a grace period of fourteen days with service intact, then suspends.
+
+A suspended subscription retains customer data for ninety days. After ninety days the data is deleted and cannot be recovered, and agents must state this plainly rather than implying that recovery might be possible.
+
+7.2 Cancellations and prorating
+
+Monthly subscriptions may be cancelled at any time and remain active until the end of the paid period. No partial month refunds are issued. Annual subscriptions cancelled within fourteen days of purchase or renewal receive a full refund. After fourteen days, annual subscriptions receive a pro rata refund on whole remaining months only where local law requires it, and otherwise remain active until the end of the paid year.
+
+7.3 Duplicate and disputed charges
+
+A duplicate charge is refunded on identification without requiring the customer to prove it. Agents should refund first and reconcile afterwards, since the reconciliation cost is lower than the contact cost of a dispute.
+
+Where a customer has initiated a chargeback, the case moves to the disputes queue and the agent must not issue a refund, as a refund alongside a chargeback produces a double credit that is difficult to recover.
+
+7.4 Account access and ownership
+
+Account ownership transfers require written confirmation from the registered owner and identity verification of both parties. A device being physically in someone's possession is not evidence of account ownership, and agents must not release account access on that basis regardless of how the request is framed.
+
+Where a registered owner is deceased, the account passes through the bereavement procedure, which requires a death certificate and evidence of authority over the estate. Agents handling these contacts should use the bereavement script and should not require the contact to repeat details already provided.
+
+SECTION 8. ESCALATION
+
+8.1 When to escalate
+
+Escalate where the customer requests a supervisor, where the resolution requires an exception to this handbook, where the case involves a safety concern, where the case involves a regulator or a legal representative, where media contact is mentioned, or where the customer's situation is not addressed by this handbook.
+
+Escalation is not a failure. An agent who escalates appropriately is doing the job correctly. An agent who improvises an exception is not.
+
+8.2 How to escalate
+
+Set the case priority, add an escalation note stating the specific decision required rather than a narrative of the contact, and assign to the escalation queue. The escalation note should be readable by someone who has not seen the case, and should end with the question being asked.
+
+Safety concerns bypass the queue and go directly to the duty lead by telephone. Safety concerns include any report of overheating, swelling, smoke, fire, or injury. These cases are never closed by the handling agent.
+
+8.3 Goodwill
+
+Agents may issue goodwill credits up to the limit in the current fee schedule without approval, once per customer per twelve months. Goodwill is for acknowledging a genuine inconvenience caused by Northwind, and is not a tool for ending a difficult contact.
+
+Goodwill must be recorded with a reason code. Uncoded goodwill is reversed during audit and the agent is coached.
+
+SECTION 9. PRIVACY AND DATA HANDLING
+
+Agents access customer records only where an open case requires it. Access is logged and audited. Curiosity is not a business purpose, and looking up an account without a case is a disciplinary matter regardless of whether anything is done with the information.
+
+Customer data is never sent to a personal email address, never photographed, and never pasted into a tool that has not been approved for customer data. Where a customer asks an agent to send information somewhere unusual, the answer is the approved channel.
+
+Requests for data export, correction, or deletion follow the published rights procedure and have statutory deadlines. Agents must log these requests on the day they are received even when the request arrives in the middle of an unrelated contact.
+
+Recordings and transcripts are retained for the published period and are available to the customer on request through the rights procedure. Agents should assume every contact is recorded and should behave accordingly.
+
+SECTION 10. TONE AND WRITING
+
+Write plainly. Prefer short sentences. Say what happened, what will happen next, and when. A customer who has read your message should know the answer to all three without re-reading it.
+
+Do not apologise repeatedly. One clear acknowledgement is worth more than three hedged ones. Do not use the passive voice to avoid saying who did something, particularly where the answer is Northwind.
+
+Do not promise what you cannot control. Carrier timelines, bank posting times, and repair outcomes are outside our control, and stating them as commitments produces a second contact when they slip.
+
+Never blame the customer, another department, a carrier, or a previous agent. The customer contacted Northwind, and Northwind is answering.
+
+Use the customer's name once at the start. Do not use it in every paragraph, which reads as a script rather than as attention.
+
+Close with the specific next step and who owns it. A message that ends without a next step generates a follow-up contact whose only purpose is to ask what happens now.
+
+SECTION 11. COMMON SCENARIOS
+
+11.1 The device will not charge
+
+Establish which charger and cable are in use, whether the device has ever charged, and whether the charging port is obstructed. A device that has never charged since purchase is a defect. A device that stopped charging after a period of use is more often a cable or charger fault, and asking the customer to try a different cable resolves a substantial share of these contacts without a case.
+
+Where the port shows physical damage in photographs, this is not covered and the customer should be quoted the out of warranty repair fee.
+
+11.2 The battery drains quickly
+
+Run the service tool capacity check before accepting a battery complaint. Where capacity is above seventy percent, the issue is usually configuration rather than hardware, and the battery guidance article resolves it. Where capacity is below seventy percent within the warranty period, this is covered.
+
+Do not offer a battery replacement on the basis of the customer's description alone.
+
+11.3 The customer is outside the return window
+
+State the window plainly and do not imply that an exception may be available while checking whether it is. Where the customer is a small number of days outside the window and the reason is a delivery delay or an illness, a team lead may approve an exception. Where the customer is substantially outside the window, the answer is no, and giving that answer clearly is kinder than an extended process ending in the same place.
+
+11.4 The customer is angry
+
+Let the customer finish. Acknowledge the specific thing that went wrong rather than offering a general apology. State what you can do. Where the customer is abusive rather than angry, use the warning script once, and end the contact if the behaviour continues.
+
+An angry customer with a legitimate complaint is not a difficult customer. They are a customer we have already failed once, and the contact is the opportunity to not fail twice.
+
+11.5 The customer wants something we do not do
+
+Say so directly and explain what is available instead. Do not leave a request open in the hope it becomes someone else's contact. Where the request is reasonable and we simply do not offer it, log it under the product feedback code, which is read.
+
+SECTION 12. APPENDIX
+
+12.1 Case codes
+
+Hardware defect, in warranty. Hardware defect, out of warranty. Accidental damage, plan claim. Accidental damage, no plan. Return, within window. Return, exception approved. Shipping, delayed. Shipping, lost. Shipping, damaged on arrival. Billing, duplicate charge. Billing, subscription dispute. Billing, refund request. Account, access. Account, ownership transfer. Account, bereavement. Privacy, rights request. Safety concern. Product feedback. Other, escalated.
+
+12.2 Required fields before closing a case
+
+Case code. Device serial number where a device is involved. Proof of purchase status. Resolution summary in one sentence. Any goodwill issued with its reason code. Any commitment made to the customer with its date.
+
+12.3 Things that are never done
+
+A refund is never issued alongside an open chargeback. Account access is never released without verification. A serial number is never inferred from packaging. Customer data is never sent outside approved channels. A safety case is never closed by the handling agent. An exception to this handbook is never granted without a recorded approval.
+
+SECTION 13. REPAIR OPERATIONS
+
+13.1 Sending a device for repair
+
+A device is sent for repair only after remote diagnosis has been attempted and recorded. The service tool produces a diagnostic bundle, and a repair request without a bundle is returned to the agent by the service centre rather than processed. Agents should complete the bundle during the contact rather than promising to attach it later, since a case that leaves the agent incomplete is rarely completed afterwards.
+
+The customer receives a prepaid shipping label valid for twenty-one days. Labels that expire are reissued once without question. A second expiry closes the case, and the customer is told this when the second label is issued so that the closure is not a surprise.
+
+Customers should be told to remove accessories, cases, and memory cards before shipping. Items sent with a device are not returned and are not compensated, and this is stated in the shipping instructions as well as verbally.
+
+13.2 Repair outcomes
+
+A repair concludes in one of four ways. The device is repaired under warranty at no charge. The device is repaired outside warranty at the quoted fee, which requires the customer's approval before work starts. The device is found to have no fault, in which case it is returned with a diagnostic report and the customer is not charged. The device is found to be beyond economic repair, in which case a replacement is offered at the published exchange price, or free of charge where the failure is covered.
+
+Where a repair is quoted and the customer declines, the device is returned unrepaired at no charge. Agents must not apply pressure to accept a quote, and must not present the return of an unrepaired device as a penalty.
+
+13.3 Repair turnaround
+
+The target is ten business days from receipt at the service centre to dispatch of the repaired device. Parts availability is the usual cause of overrun. Where a case exceeds fifteen business days, the agent contacts the customer proactively with a revised date rather than waiting for the customer to ask.
+
+A case exceeding twenty-five business days is escalated automatically and a replacement is considered regardless of the repair status.
+
+13.4 Data on repaired devices
+
+Repair may require the device to be reset. Agents must tell the customer this before the device ships and must record that they did so. Northwind does not back up customer data and cannot recover data from a device after service. Where a customer cannot back up because the device will not power on, this is stated plainly rather than softened, because a customer who believes their data may survive will be far more upset when it does not.
+
+SECTION 14. RESELLERS AND CHANNEL
+
+14.1 Authorised resellers
+
+The authorised reseller list is maintained in the channel directory and changes monthly. A seller describing itself as authorised is not evidence of authorisation. Agents should check the directory before accepting a reseller purchase as direct.
+
+Warranty is honoured on devices bought from authorised resellers regardless of where the customer contacts us. Returns are not, and are handled by the reseller under their own policy.
+
+14.2 Unauthorised sellers
+
+Devices purchased from unauthorised sellers carry the manufacturer warranty where the serial number is valid and the device has not been reported lost or stolen. They are not eligible for the extended service plan, for goodwill, or for direct returns.
+
+Where a serial number is flagged as lost or stolen, the case moves to the security queue without further discussion with the customer. Agents must not tell the customer that the device is flagged, and must not accuse the customer of anything. The correct wording is in the security script.
+
+14.3 Counterfeit devices
+
+Suspected counterfeit devices are identified by serial number validation failure combined with physical indicators listed in the counterfeit guide. These cases go to the brand protection queue.
+
+The customer is told that the device cannot be validated and is advised to seek a refund from the seller. Agents must not use the word counterfeit with a customer, since the determination is not the agent's to make.
+
+SECTION 15. TOOLING
+
+15.1 The service tool
+
+The service tool provides serial lookup, warranty status, battery capacity measurement, firmware version and advisory matching, and the diagnostic bundle. It is the source of truth for device state, and its output overrides customer report where the two conflict.
+
+The tool occasionally returns a stale warranty status for devices purchased in the preceding forty-eight hours. Where a customer has proof of purchase dated within that window and the tool shows no coverage, trust the proof of purchase and note the discrepancy on the case.
+
+15.2 The case system
+
+Cases are opened at first contact, not at first action. An agent who resolves an issue during the contact still opens and closes a case, because the volume data drives staffing and unopened cases make busy periods look quiet.
+
+Case notes are written for the next person, who has not spoken to this customer. Write what was established, what was decided, and what remains open. Do not write a transcript, and do not write anything you would not want the customer to read, since they may request it.
+
+15.3 The knowledge base
+
+The knowledge base holds customer facing articles. It is not a substitute for this handbook and does not carry policy. Where an article and this handbook disagree, the handbook governs and the article is reported for correction.
+
+Agents should link articles rather than pasting their content, so that the customer receives the current version rather than a snapshot.
+
+SECTION 16. QUALITY AND COACHING
+
+Contacts are sampled for quality review. The review covers accuracy against this handbook, clarity of writing, correct case coding, and whether commitments made to the customer were achievable.
+
+Review is not a ranking exercise. A contact that follows the handbook and produces an unhappy customer scores well. A contact that produces a happy customer by promising something Northwind will not deliver scores badly, because the second contact is coming and it will be worse than the first.
+
+Agents may challenge a review outcome. Challenges are read by someone other than the original reviewer.
+
+Repeated accuracy failures on the same topic indicate a handbook or training gap rather than an agent gap, and are reported as such. Where three agents make the same error, the handbook is the problem.
